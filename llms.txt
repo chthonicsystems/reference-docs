@@ -27,17 +27,44 @@ libraries/devops-scripts/index.md	DevOps CLI — dev-start, setup-server, setup-
 libraries/documents/index.md	Liquid + CSS + Gotenberg PDF pipeline + 4 themes + Document Designer + AI generation.
 libraries/feedback/index.md	Internal customer reviews + Google Reviews integration + weighted aggregate ratings.
 libraries/files/index.md	S3 + ImageSharp + signed URLs + polymorphic FK + multipart upload + DB-blob fallback.
-libraries/identity/index.md	Auth (JWT + OAuth) + users + customer auth + RBAC + sessions + API keys.
+libraries/identity/api-keys.md	Asymmetric-key auth — challenge/verify protocol for the Chthonic CLI.
+libraries/identity/architecture.md	Identity library internal structure — 12 entities, ports, services, endpoint groups.
+libraries/identity/auth-flow.md	Login + OAuth + invite + reset-password flows for staff users.
+libraries/identity/consumption.md	Code-level integration walkthrough for @chthonic/identity.
+libraries/identity/customer-auth.md	Mobile-based customer auth — SMS OTP verification, parties-customer linking.
+libraries/identity/extension-points.md	Five port adapters consumers register before AddChthonicIdentity.
+libraries/identity/index.md	Authentication (JWT + OAuth) + users + customer auth + RBAC + sessions + API keys.
+libraries/identity/rbac.md	9 default roles + page/action permission types + DatabaseSeeder pattern.
 libraries/listings/index.md	Public marketplace listings + 4 themes + slug rules + AI generation + listing media.
-libraries/locale/index.md	Date/number/currency formatting + Liquid filters + country defaults.
+libraries/locale/architecture.md	Internal structure of @chthonic/locale — file layout, key types, parity rules between .NET and TS.
+libraries/locale/consumption.md	Full code-level integration walkthrough for @chthonic/locale.
+libraries/locale/country-defaults.md	Country → date/number/currency/tax/timezone derivation tables.
+libraries/locale/extension-points.md	Every hook a consumer can use to integrate or extend @chthonic/locale.
+libraries/locale/index.md	Date/number/currency formatting + Liquid filters + country defaults + terminology + timezone validation.
+libraries/locale/liquid-filters.md	The four Liquid format filters — format_date, format_datetime, format_number, format_currency.
+libraries/locale/terminology.md	Country-default + per-tenant override merge for the 10 canonical terminology keys.
+libraries/locale/timezone-validation.md	IANA timezone validation strategy — curated allowlist + runtime probe + invariant tests.
 libraries/mobile-runtime/index.md	Capacitor runtime — push, deep-link, force-update, biometric, camera/file, version sync.
 libraries/notes/index.md	Entity annotations with polymorphic FK + threading + unread tracking.
 libraries/notifications/index.md	Multi-channel publisher + Liquid templates + reminders + comms.
-libraries/parties/index.md	Customers + addresses + contacts + mobile verification.
+libraries/parties/addresses.md	Customer address fields + country normalisation + downstream consumers.
+libraries/parties/architecture.md	Customer + CustomerAsset entities, schema, services.
+libraries/parties/consumption.md	Code-level integration walkthrough for @chthonic/parties.
+libraries/parties/customers.md	Customer entity — CRUD + search + linking endpoints.
+libraries/parties/extension-points.md	Extension points — identity adapter, asset attachment, search hooks.
+libraries/parties/index.md	Customers + addresses + contacts + customer-asset linking.
+libraries/parties/mobile-verification.md	Mobile-based customer linking — identity registers the user; parties links them by mobile.
 libraries/payments/index.md	Provider abstraction + webhook idempotency + Money type. Stripe impl in companion package.
 libraries/support/index.md	Support tickets + CTI routing + GitHub issue sync + IIssueTrackerProvider abstraction.
 libraries/templating/index.md	Liquid engine + validator + AI-output sanitization + iframe isolation.
+libraries/tenant/appversion.md	AppVersion entity + endpoint for mobile force-update / recommended-update detection.
+libraries/tenant/architecture.md	Tenant library internal structure — entities, entitlements model, config-hub sections.
+libraries/tenant/config-hub.md	Config Hub admin shell — 13 sections in 4 groups + ConfigHubShell consumer-supplied sections.
+libraries/tenant/consumption.md	Code-level integration walkthrough for @chthonic/tenant.
+libraries/tenant/entitlements.md	Generic entitlements — tier_limit + tier_feature + feature_override + quota_usage. Data-driven flags + limits.
+libraries/tenant/extension-points.md	Tenant extension points — sections, signup handler, entitlement adders.
 libraries/tenant/index.md	Multi-tenant root + Config Hub admin shell + generic entitlements + AppVersion + SmartLink.
+libraries/tenant/smartlink.md	SmartLink — universal-link redirects + iOS/Android deep-link infrastructure.
 libraries/ui/index.md	Foundational design system — MD3 + app-* primitives + 5 page patterns + customer portal layout + brand tokens.
 libraries/views/index.md	Custom field definitions + per-role view configurations + ScreenSectionsRenderer.
 libraries/work/index.md	Slimmed Job spine — Job + JobMechanic + JobApproval + auto-comments + status validation.
