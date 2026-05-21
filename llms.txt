@@ -16,7 +16,15 @@ platform/overview.md	25-library platform map, tier mental model, dependency DAG.
 platform/version-policy.md	SemVer policy, Conventional Commits, release automation, breaking-change protocol.
 
 ## libraries/
+libraries/ai/ai-tool-loop.md	AiToolLoop — Bedrock Converse + tool-call cycle, max 20 iterations.
+libraries/ai/architecture.md	AI internals — Bedrock client, AiToolLoop orchestrator, AiGenerationConsumer queue.
+libraries/ai/bedrock-integration.md	Bedrock Converse API integration — model selection, request shape, response parsing.
+libraries/ai/consumption.md	Code-level integration walkthrough.
+libraries/ai/ecdsa-keypair-auth.md	ECDSA keypair auth — tool-loop signs HTTP callbacks; consumer verifies via @chthonic/identity.
+libraries/ai/extension-points.md	Extension points — IToolExecutor, model override, max-iterations override.
 libraries/ai/index.md	Bedrock + AiToolLoop + IToolExecutor pattern + ECDSA keypair auth + AI UI shells.
+libraries/ai/tool-executor-pattern.md	IToolExecutor — per-feature tool definition + execution. Each AI feature implements one.
+libraries/ai/ui-shells.md	AI UI shells — AiPill, AiSectionBanner, AiChat, AiVersionCarousel, AiArtifactEditor, AiAssistantPanel.
 libraries/assets/architecture.md	Assets internal structure — TPH discriminator, subtype registry, EF migration.
 libraries/assets/consumption.md	Code-level integration walkthrough — registering a subtype.
 libraries/assets/cross-library-fk-only.md	Cross-library FK-only typing — Job/Booking/etc. reference Asset by FK + cast at call site.
@@ -31,8 +39,23 @@ libraries/audit/cross-library-writes.md	Cross-library audit writes — string-va
 libraries/audit/extension-points.md	Extension points — RabbitMQ adapter, AuditCategory enum, retention config.
 libraries/audit/index.md	Append-only audit log + IAuditLogger contract + RabbitMQ async write pipeline.
 libraries/audit/rabbitmq-pipeline.md	RabbitMQ async write pipeline — exchange + queue + consumer + dead-letter.
+libraries/billing/architecture.md	Billing internals — three-package shape, accounting connection, periodic sync.
+libraries/billing/consumption.md	Code-level integration walkthrough.
+libraries/billing/estimate-invoice-flow.md	Estimate → Invoice → Paid lifecycle.
+libraries/billing/extension-points.md	Add accounting provider — IAccountingProvider impl + sister NuGet package.
 libraries/billing/index.md	Estimates + invoices + Xero + QuickBooks + token encryption + inventory sync.
+libraries/billing/inventory-sync.md	PeriodicInventorySyncService — pull product list from accounting providers + diff against catalog.
+libraries/billing/quickbooks-integration.md	QuickBooks accounting provider — OAuth2, realmId, push-customer + push-invoice.
+libraries/billing/token-encryption.md	ITokenEncryptionService — at-rest encryption of OAuth tokens for accounting connections.
+libraries/billing/xero-integration.md	Xero accounting provider — OAuth2 flow, organisation selection, push-customer + push-invoice.
+libraries/booking/architecture.md	Booking internals — state machine, availability service, schema.
+libraries/booking/availability-service.md	BookingAvailabilityService — slot calculation respecting time slots + off-days + existing bookings.
+libraries/booking/consumption.md	Code-level integration walkthrough.
+libraries/booking/extension-hooks.md	Two consumer ports — IBookingNotificationDispatcher, IBookingLimitService.
+libraries/booking/extension-points.md	Extension points — IBookingNotificationDispatcher, IBookingLimitService, IBookingAvailabilityService override.
+libraries/booking/frontend-hooks.md	useBookings + useBookingAvailability React hooks.
 libraries/booking/index.md	Customer bookings + time slots + off-days + availability service.
+libraries/booking/time-slots.md	ServiceTimeSlot + ServiceOffDay — per-service availability windows + closures.
 libraries/catalog/architecture.md	Catalog internal structure — 4 entities, services, EF migration.
 libraries/catalog/consumption.md	Code-level integration walkthrough.
 libraries/catalog/extension-points.md	Extension points — IDbContextProvider, permission overrides, optional time-slot library.
@@ -42,8 +65,22 @@ libraries/catalog/service-and-product.md	Service and Product entities — top-le
 libraries/catalog/serviceitem-fields.md	ServiceItem — line items under a Service. Cost lives here, not on Service.
 libraries/data/index.md	Per-tenant SQLite export.
 libraries/devops-scripts/index.md	DevOps CLI — dev-start, setup-server, setup-ssl, setup-github-envs, db-backup, pre-deploy-check.
+libraries/documents/ai-generation.md	AI-generated document themes — per-doc-type Ai{Type}TemplateToolExecutor + system prompt.
+libraries/documents/architecture.md	Documents internals — Common base classes + per-type concretes for 4 doc types.
+libraries/documents/consumption.md	Code-level integration walkthrough.
+libraries/documents/document-designer-shell.md	<DocumentDesignerShell> — admin UI for picking theme + editing labels + previewing PDFs.
+libraries/documents/extension-points.md	Extension points — per-product theme, custom context builder, AI tool executor.
+libraries/documents/four-themes.md	Four pre-built themes — Classic, Modern, Bold, Elegant — per document type.
+libraries/documents/gotenberg-pdf.md	GotenbergPdfRenderer — HTML → PDF via Gotenberg sidecar.
 libraries/documents/index.md	Liquid + CSS + Gotenberg PDF pipeline + 4 themes + Document Designer + AI generation.
+libraries/documents/liquid-pipeline.md	Liquid + locale-filter pipeline shared across all four document types.
+libraries/feedback/architecture.md	Feedback internals — internal reviews, Google Places cache, weighted aggregator.
+libraries/feedback/consumption.md	Code-level integration walkthrough.
+libraries/feedback/extension-points.md	Extension points — IRatingAggregator, IReviewAccessProvider, cache TTL.
+libraries/feedback/google-reviews.md	Google Reviews — pull from Google Places API + 24h cache + graceful degradation.
 libraries/feedback/index.md	Internal customer reviews + Google Reviews integration + weighted aggregate ratings.
+libraries/feedback/internal-reviews.md	Internal review CRUD — write, moderate, list.
+libraries/feedback/weighted-aggregate.md	Weighted rating aggregator — internal × 1.0, Google × 0.8.
 libraries/files/architecture.md	Files library internals — S3Helper, ImageProcessor, FileService, multipart sessions.
 libraries/files/consumption.md	Code-level integration walkthrough.
 libraries/files/db-blob-fallback.md	Legacy DB-blob fallback — pre-S3 photos served directly from blob_data column.
@@ -60,7 +97,16 @@ libraries/identity/customer-auth.md	Mobile-based customer auth — SMS OTP verif
 libraries/identity/extension-points.md	Five port adapters consumers register before AddChthonicIdentity.
 libraries/identity/index.md	Authentication (JWT + OAuth) + users + customer auth + RBAC + sessions + API keys.
 libraries/identity/rbac.md	9 default roles + page/action permission types + DatabaseSeeder pattern.
+libraries/listings/ai-generation.md	AI-generated listing themes — prompt-centric session, artifact-keyed carousel, manual edit.
+libraries/listings/architecture.md	Listings internals — registry, slug generation, AI artifacts, public + admin endpoints.
+libraries/listings/consumption.md	Code-level integration walkthrough.
+libraries/listings/extension-points.md	Extension points — per-product theme, per-tier feature flags, slug rules.
+libraries/listings/four-themes.md	Four pre-built listing themes — Classic, Modern, Bold, Elegant.
 libraries/listings/index.md	Public marketplace listings + 4 themes + slug rules + AI generation + listing media.
+libraries/listings/listing-media.md	Listing photos — system_listing_media join to @chthonic/files.
+libraries/listings/marketplace-listings.md	Public marketplace listings — anonymous-readable tenant pages with custom branding.
+libraries/listings/public-listing-page.md	<PublicListingPage> — anonymous-readable React component rendering /listing/{slug}.
+libraries/listings/slug-rules.md	Slug rules — lowercase, hyphenated, max 100 chars, unique, reserved-words-rejected.
 libraries/locale/architecture.md	Internal structure of @chthonic/locale — file layout, key types, parity rules between .NET and TS.
 libraries/locale/consumption.md	Full code-level integration walkthrough for @chthonic/locale.
 libraries/locale/country-defaults.md	Country → date/number/currency/tax/timezone derivation tables.
@@ -70,8 +116,22 @@ libraries/locale/liquid-filters.md	The four Liquid format filters — format_dat
 libraries/locale/terminology.md	Country-default + per-tenant override merge for the 10 canonical terminology keys.
 libraries/locale/timezone-validation.md	IANA timezone validation strategy — curated allowlist + runtime probe + invariant tests.
 libraries/mobile-runtime/index.md	Capacitor runtime — push, deep-link, force-update, biometric, camera/file, version sync.
+libraries/notes/architecture.md	Notes internals — Note entity, polymorphic FK, threading + unread (deferred to v0.2.0+).
+libraries/notes/consumption.md	Code-level integration walkthrough.
+libraries/notes/extension-hooks.md	INoteEntityAccessProvider + INoteCreatedHandler patterns and TT examples.
+libraries/notes/extension-points.md	Two consumer ports — INoteEntityAccessProvider, INoteCreatedHandler.
 libraries/notes/index.md	Entity annotations with polymorphic FK + threading + unread tracking.
-libraries/notifications/index.md	Multi-channel publisher + Liquid templates + reminders + comms.
+libraries/notes/polymorphic-attachment.md	Polymorphic attachment — note.entity_type / entity_id attaches notes to any consumer entity.
+libraries/notes/threading.md	Threading via parent_note_id — schema room ships at v0.1.0; UI + service deferred to v0.2.0+.
+libraries/notes/unread-tracking.md	Unread tracking — deferred to v0.2.0+. Schema design captured for forward-compat.
+libraries/notifications/architecture.md	Notifications internals — publisher, channels, templates, reminders, comms.
+libraries/notifications/communications-panel.md	<CommunicationsInbox> — in-app notification inbox component.
+libraries/notifications/consumption.md	Code-level integration walkthrough.
+libraries/notifications/extension-points.md	Extension points — new channel, custom templates, custom reminder milestones.
+libraries/notifications/index.md	Multi-channel publisher (push/email/SMS/in-app) + Liquid templates + reminders + comms.
+libraries/notifications/liquid-templates.md	Email/SMS template rendering — Liquid + locale filters preloaded.
+libraries/notifications/multi-channel-publisher.md	INotificationPublisher — single send API across email/SMS/push/in-app.
+libraries/notifications/reminders.md	ReminderScheduler — daily 02:00 UTC; idempotent via composite index.
 libraries/parties/addresses.md	Customer address fields + country normalisation + downstream consumers.
 libraries/parties/architecture.md	Customer + CustomerAsset entities, schema, services.
 libraries/parties/consumption.md	Code-level integration walkthrough for @chthonic/parties.
@@ -87,8 +147,21 @@ libraries/payments/money-type.md	Money value type — currency + minor-unit amou
 libraries/payments/provider-abstraction.md	IPaymentProvider interface + how to implement a new provider.
 libraries/payments/stripe-integration.md	Stripe-specific implementation — StripePaymentProvider, webhook endpoint, env var setup.
 libraries/payments/webhook-idempotency.md	Webhook idempotency — duplicate-event detection via DB unique-key insert.
+libraries/support/architecture.md	Support internals — ticket entity, CTI routing, two-package shape (interface + GitHub impl).
+libraries/support/consumption.md	Code-level integration walkthrough.
+libraries/support/cti-routing.md	Category/Type/Item routing — match incoming tickets to resolver groups + external issue trackers.
+libraries/support/extension-points.md	Extension points — IIssueTrackerProvider for new providers + CTI seeding.
+libraries/support/github-sync.md	GitHubIssueTrackerProvider — creates GitHub issues from support tickets via Octokit.
 libraries/support/index.md	Support tickets + CTI routing + GitHub issue sync + IIssueTrackerProvider abstraction.
-libraries/templating/index.md	Liquid engine + validator + AI-output sanitization + iframe isolation.
+libraries/support/issue-tracker-abstraction.md	IIssueTrackerProvider interface — abstracts external trackers (GitHub Phase-1; Linear/Jira/Zendesk Phase-2).
+libraries/support/ticketing.md	Support ticket lifecycle + endpoints + status transitions.
+libraries/templating/ai-output-sanitization.md	AI-output sanitization — RenderedHtmlSecurityPolicy validates Claude-generated HTML against allowlist.
+libraries/templating/architecture.md	Templating internals — Fluid wrapper, RenderedHtmlSecurityPolicy, TemplateOptionsFactory.
+libraries/templating/consumption.md	Code-level integration walkthrough.
+libraries/templating/extension-points.md	Extension points — TemplateOptionsFactory, custom filters/tags, security policy override.
+libraries/templating/iframe-isolation.md	<IsolatedTemplatePreview> — iframe-isolated rendering for browser-side previews.
+libraries/templating/index.md	Liquid engine + validator + AI-output sanitization + iframe isolation. One canonical engine for notifications/documents/listings/ai.
+libraries/templating/liquid-engine.md	Fluid wrapper — Liquid syntax, member-access conventions, error handling.
 libraries/tenant/appversion.md	AppVersion entity + endpoint for mobile force-update / recommended-update detection.
 libraries/tenant/architecture.md	Tenant library internal structure — entities, entitlements model, config-hub sections.
 libraries/tenant/config-hub.md	Config Hub admin shell — 13 sections in 4 groups + ConfigHubShell consumer-supplied sections.
@@ -98,5 +171,19 @@ libraries/tenant/extension-points.md	Tenant extension points — sections, signu
 libraries/tenant/index.md	Multi-tenant root + Config Hub admin shell + generic entitlements + AppVersion + SmartLink.
 libraries/tenant/smartlink.md	SmartLink — universal-link redirects + iOS/Android deep-link infrastructure.
 libraries/ui/index.md	Foundational design system — MD3 + app-* primitives + 5 page patterns + customer portal layout + brand tokens.
+libraries/views/architecture.md	Views internals — 12 entities, view resolution, entity_type discriminator.
+libraries/views/auto-providers.md	IAutoScreenProvider<T> + IAutoOptionsProvider — runtime sections + dropdown options.
+libraries/views/consumption.md	Code-level integration walkthrough.
+libraries/views/custom-fields.md	Custom field definitions — types, visibility rules, dropdown options, linked fields.
+libraries/views/entity-field-discriminator.md	entity_type discriminator + (entity_type, entity_id) polymorphic FK on entity_field_value.
+libraries/views/extension-points.md	Extension points — IAutoScreenProvider<T>, IAutoOptionsProvider, IDbContextProvider, http adapter.
 libraries/views/index.md	Custom field definitions + per-role view configurations + ScreenSectionsRenderer.
+libraries/views/screen-sections-renderer.md	<ScreenSectionsRenderer> — dynamic field renderer that respects view resolution + role visibility.
+libraries/work/architecture.md	Work internals — Job spine, mechanic assignment, auto-comment generator.
+libraries/work/auto-comments.md	AutoCommentGenerator — system-emitted comments on every status transition.
+libraries/work/consumption.md	Code-level integration walkthrough.
+libraries/work/cross-library-asset-fk.md	Job.Asset typed as polymorphic Asset base — consumer downcasts at the call site.
+libraries/work/extension-points.md	Extension points — IJobStatusTransitionValidator, IAutoCommentGenerator, IJobNumberGenerator.
 libraries/work/index.md	Slimmed Job spine — Job + JobMechanic + JobApproval + auto-comments + status validation.
+libraries/work/job-spine.md	Job spine — what the slimmed v0.1.0 owns vs split-off concerns.
+libraries/work/status-transitions.md	Job status transitions — three statuses, valid moves, status-specific permissions.
