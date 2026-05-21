@@ -42,7 +42,7 @@ When a ticket matches a CTI with `external_provider='github'`:
 
 ---
 
-[View in app]({{ ticket_url }})
+[View in app](#) (URL is `{{ ticket_url }}` in template)
 ```
 
 ## Closing the loop
