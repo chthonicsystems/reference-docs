@@ -8,6 +8,12 @@ CONTRIBUTING.md	Front-matter spec + per-library shape contract + how to add a ne
 .kiro/steering/AGENT-CONTEXT.md	Kiro-flavoured mirror of AGENTS.md (byte-identical content).
 
 ## platform/
+platform/extension-patterns.md	The 6 reusable patterns across all 25 libraries — polymorphic FK, two-package shape, entitlements, Option C UI shells, migration coexistence, cross-library FK-only typing.
+platform/forking-a-library.md	When and how to fork a library — last-resort guidance for product-specific divergence.
+platform/library-consumption.md	How to consume Chthonic libraries — NuGet config, npm registry, GITHUB_PACKAGES_PAT setup.
+platform/new-library.md	How to add a 26th library — repo scaffold, package layout, RFC, extraction-sequence amendment.
+platform/overview.md	25-library platform map, tier mental model, dependency DAG.
+platform/version-policy.md	SemVer policy, Conventional Commits, release automation, breaking-change protocol.
 
 ## libraries/
 libraries/ai/index.md	Bedrock + AiToolLoop + IToolExecutor pattern + ECDSA keypair auth + AI UI shells.
