@@ -11,36 +11,78 @@ summary: DevOps CLI — dev-start, setup-server, setup-ssl, setup-github-envs, d
 
 # `@chthonicsystems/devops-scripts`
 
-DevOps CLI — dev-start, setup-server, setup-ssl, setup-github-envs, db-backup, pre-deploy-check.
+npm-only. CLI tool consumed by every product's `dev-start.sh` + deployment pipeline. Companion repos: `chthonicsystems/devops-workflows` (reusable GitHub Actions) + `chthonicsystems/devops-template` (CDK + monitoring + nginx scaffolding).
 
 ## Purpose
 
-_Reference docs in progress — see [governing RFC](https://github.com/chthonicsystems/architecture/blob/main/rfcs/) and [library README](https://github.com/chthonicsystems/devops-scripts/blob/main/README.md) for current intent._
+Standardise DevOps operations across products:
+
+- `dev-start` — local dev orchestration (build + test + Docker up).
+- `setup-server` — provision a Digital Ocean droplet (Docker + nginx + cron).
+- `setup-ssl` — Let's Encrypt + nginx SSL config.
+- `setup-github-envs` — create + populate GitHub Environments + secrets.
+- `db-backup` — manual MySQL backup to S3.
+- `pre-deploy-check` — validates secrets + DNS + cert + S3 access before deploy.
 
 ## Public surface
 
 ### .NET
 
-_See [`architecture.md`](architecture.md) and [`consumption.md`](consumption.md)._
+n/a — npm-only library.
 
 ### npm
 
-_See [`consumption.md`](consumption.md)._
+| Export | Role |
+|---|---|
+| `@chthonicsystems/devops-scripts` (CLI) | `npx @chthonicsystems/devops-scripts <command>` |
+| `dev-start` | Build + test + Docker compose |
+| `setup-server` | Droplet provisioning |
+| `setup-ssl` | Let's Encrypt + nginx |
+| `setup-github-envs` | GitHub Environments + secrets |
+| `db-backup` | MySQL → S3 |
+| `pre-deploy-check` | Validation gate |
+
+## Companion repos
+
+| Repo | Type | Role |
+|---|---|---|
+| `chthonicsystems/devops-workflows` | Reusable GitHub Actions | `deploy-beta`, `deploy-prod`, `deploy-android`, `deploy-cdk`, `deploy-monitoring` |
+| `chthonicsystems/devops-template` | Git template repo | CDK stacks + monitoring config + nginx orchestration glue |
 
 ## Dependencies
 
-Library deps: `[]`. See [`platform/library-consumption.md`](../../platform/library-consumption.md) for resolution rules.
+| Dep | Purpose |
+|---|---|
+| Node 20+ | Runtime |
+| AWS CLI v2 | S3 + Secrets Manager |
+| Docker | Local dev |
+| GitHub CLI (`gh`) | Environment + secret management |
 
 ## Extension points
 
-_See [`extension-points.md`](extension-points.md)._
+| Hook | Use |
+|---|---|
+| Subcommand registration | `chthonic-devops <new-command>` |
+| Per-product config | `.chthonicrc.json` at repo root |
+| Pre/post hooks | Per-command shell hooks |
 
 ## Consuming this library
 
-_See [`consumption.md`](consumption.md)._
+```bash
+npx @chthonicsystems/devops-scripts dev-start
+npx @chthonicsystems/devops-scripts pre-deploy-check
+npx @chthonicsystems/devops-scripts setup-server --host 167.172.75.139
+```
+
+Or via product's wrapper script:
+
+```bash
+./dev-start.sh   # delegates to chthonic-devops dev-start
+```
 
 ## Related
 
-- Library repo: [chthonicsystems/devops-scripts](https://github.com/chthonicsystems/devops-scripts)
-- RFCs: [0019]
-- Related libraries: []
+- [`architecture.md`](architecture.md), [`consumption.md`](consumption.md), [`extension-points.md`](extension-points.md).
+- [`dev-start.md`](dev-start.md), [`setup-server.md`](setup-server.md), [`setup-ssl.md`](setup-ssl.md), [`setup-github-envs.md`](setup-github-envs.md), [`db-backup.md`](db-backup.md), [`pre-deploy-check.md`](pre-deploy-check.md).
+- Library repo: [chthonicsystems/devops-scripts](https://github.com/chthonicsystems/devops-scripts).
+- [RFC 0019](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0019-devops-strategy.md).

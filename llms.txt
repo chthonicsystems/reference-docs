@@ -63,8 +63,22 @@ libraries/catalog/index.md	Service & Product catalog spine — vertical-agnostic
 libraries/catalog/productvariant-pricing.md	ProductVariant — line items under a Product with SKU + barcode + price.
 libraries/catalog/service-and-product.md	Service and Product entities — top-level catalog units.
 libraries/catalog/serviceitem-fields.md	ServiceItem — line items under a Service. Cost lives here, not on Service.
-libraries/data/index.md	Per-tenant SQLite export.
+libraries/data/architecture.md	Data internals — SQLite builder, RabbitMQ consumer, S3 storage.
+libraries/data/consumption.md	Code-level integration walkthrough.
+libraries/data/extension-points.md	Extension points — IDataExportLimitService, ArtifactCollector override.
+libraries/data/index.md	Per-tenant SQLite export. Bulk-import deferred.
+libraries/data/per-tenant-bundling.md	Per-tenant bundling — single SQLite + supporting files (logos, photos) in a zip.
+libraries/data/sqlite-export.md	SQLite export — schema, ISO-only date columns, Microsoft.Data.Sqlite writer.
+libraries/devops-scripts/architecture.md	devops-scripts internals — single CLI binary; subcommand dispatch; companion repos.
+libraries/devops-scripts/consumption.md	Code-level integration — fork devops-template; install chthonic-devops; set up env.
+libraries/devops-scripts/db-backup.md	db-backup — manual MySQL → S3 backup. Used by daily cron + ad-hoc.
+libraries/devops-scripts/dev-start.md	dev-start command — local AWS creds refresh + dotnet test + npm build + Docker compose up.
+libraries/devops-scripts/extension-points.md	Extension points — subcommand registration + .chthonicrc.json + pre/post hooks.
 libraries/devops-scripts/index.md	DevOps CLI — dev-start, setup-server, setup-ssl, setup-github-envs, db-backup, pre-deploy-check.
+libraries/devops-scripts/pre-deploy-check.md	pre-deploy-check — validates secrets + DNS + SSL + S3 access before deploy.
+libraries/devops-scripts/setup-github-envs.md	setup-github-envs — interactive provisioning of GitHub Environments (beta, production, monitoring) with secrets.
+libraries/devops-scripts/setup-server.md	setup-server — provision a Digital Ocean droplet (Docker + nginx + cron + monitoring).
+libraries/devops-scripts/setup-ssl.md	setup-ssl — Let's Encrypt certificate + nginx config + auto-renewal cron.
 libraries/documents/ai-generation.md	AI-generated document themes — per-doc-type Ai{Type}TemplateToolExecutor + system prompt.
 libraries/documents/architecture.md	Documents internals — Common base classes + per-type concretes for 4 doc types.
 libraries/documents/consumption.md	Code-level integration walkthrough.
@@ -115,7 +129,16 @@ libraries/locale/index.md	Date/number/currency formatting + Liquid filters + cou
 libraries/locale/liquid-filters.md	The four Liquid format filters — format_date, format_datetime, format_number, format_currency.
 libraries/locale/terminology.md	Country-default + per-tenant override merge for the 10 canonical terminology keys.
 libraries/locale/timezone-validation.md	IANA timezone validation strategy — curated allowlist + runtime probe + invariant tests.
-libraries/mobile-runtime/index.md	Capacitor runtime — push, deep-link, force-update, biometric, camera/file, version sync.
+libraries/mobile-runtime/architecture.md	mobile-runtime internals — Capacitor plugins + initMobileRuntime bootstrap.
+libraries/mobile-runtime/biometric.md	useBiometric — Face ID / Touch ID for re-authentication on app open.
+libraries/mobile-runtime/capacitor-bridge.md	Capacitor bridge — which plugins the runtime expects + initialisation order.
+libraries/mobile-runtime/consumption.md	Code-level integration — fork mobile-shell-template; configure 4 env vars; install runtime.
+libraries/mobile-runtime/deep-links.md	setupDeepLinks — Capacitor App plugin appUrlOpen → React Router push.
+libraries/mobile-runtime/extension-points.md	Extension points — initMobileRuntime opts, fcmTokenCallback, biometric prompt config.
+libraries/mobile-runtime/force-update.md	checkForceUpdate — query /api/app-version/latest at app launch; gate UI if version too old.
+libraries/mobile-runtime/index.md	Capacitor runtime — push, deep-link, force-update, biometric, camera/file, version sync. npm-only.
+libraries/mobile-runtime/push-notifications.md	registerPushNotifications — Firebase Cloud Messaging registration + foreground/background handlers.
+libraries/mobile-runtime/version-sync.md	getResolvedVersion — reads web/app_version.json + platform-specific override.
 libraries/notes/architecture.md	Notes internals — Note entity, polymorphic FK, threading + unread (deferred to v0.2.0+).
 libraries/notes/consumption.md	Code-level integration walkthrough.
 libraries/notes/extension-hooks.md	INoteEntityAccessProvider + INoteCreatedHandler patterns and TT examples.
@@ -170,7 +193,15 @@ libraries/tenant/entitlements.md	Generic entitlements — tier_limit + tier_feat
 libraries/tenant/extension-points.md	Tenant extension points — sections, signup handler, entitlement adders.
 libraries/tenant/index.md	Multi-tenant root + Config Hub admin shell + generic entitlements + AppVersion + SmartLink.
 libraries/tenant/smartlink.md	SmartLink — universal-link redirects + iOS/Android deep-link infrastructure.
+libraries/ui/app-primitives.md	app-* primitive components — cards, modals, toasts, fields, search, filter pills.
+libraries/ui/architecture.md	UI library internals — CSS file ownership, primitive promotion rules.
+libraries/ui/brand-tokens.md	Four brand tokens — the only per-product UI customisation.
+libraries/ui/consumption.md	Code-level integration walkthrough.
+libraries/ui/customer-portal-layout.md	Customer portal layout — separate from admin shell; teal accent; marketplace surface.
+libraries/ui/extension-points.md	Extension points — brand tokens override + primitive promotion rule.
+libraries/ui/five-page-patterns.md	5 canonical page patterns — list-row card, detail-hero, dynamic sections, create/edit, inline validation.
 libraries/ui/index.md	Foundational design system — MD3 + app-* primitives + 5 page patterns + customer portal layout + brand tokens.
+libraries/ui/md3-tokens.md	MD3 token layer — colour, typography, shape, elevation as CSS custom properties.
 libraries/views/architecture.md	Views internals — 12 entities, view resolution, entity_type discriminator.
 libraries/views/auto-providers.md	IAutoScreenProvider<T> + IAutoOptionsProvider — runtime sections + dropdown options.
 libraries/views/consumption.md	Code-level integration walkthrough.
