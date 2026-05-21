@@ -17,16 +17,41 @@ platform/version-policy.md	SemVer policy, Conventional Commits, release automati
 
 ## libraries/
 libraries/ai/index.md	Bedrock + AiToolLoop + IToolExecutor pattern + ECDSA keypair auth + AI UI shells.
-libraries/assets/index.md	Polymorphic Asset root + IAssetSubtypeRegistry + RegisterAssetSubtype<T>.
+libraries/assets/architecture.md	Assets internal structure — TPH discriminator, subtype registry, EF migration.
+libraries/assets/consumption.md	Code-level integration walkthrough — registering a subtype.
+libraries/assets/cross-library-fk-only.md	Cross-library FK-only typing — Job/Booking/etc. reference Asset by FK + cast at call site.
+libraries/assets/extension-points.md	Extension points — RegisterAssetSubtype<T>, AssetSubtypeOptions, AssetPermissionOptions.
+libraries/assets/index.md	Polymorphic Asset root + IAssetSubtypeRegistry + RegisterAssetSubtype<T> for Vehicle/Vessel/Forklift/Pet.
+libraries/assets/subtype-registry.md	IAssetSubtypeRegistry — runtime lookup of registered subtypes for UI + dispatch.
+libraries/assets/tph-polymorphism.md	TPH (Table Per Hierarchy) — single asset table with discriminator + nullable subtype columns.
+libraries/audit/architecture.md	Audit library internals — interceptor + RabbitMQ + consumer + retention.
+libraries/audit/auditparent-attribute.md	[AuditParent] attribute — child entity changes roll up to a parent for thread-wise viewing.
+libraries/audit/consumption.md	Code-level integration walkthrough for @chthonic/audit.
+libraries/audit/cross-library-writes.md	Cross-library audit writes — string-variant [AuditParent] attribute pattern.
+libraries/audit/extension-points.md	Extension points — RabbitMQ adapter, AuditCategory enum, retention config.
 libraries/audit/index.md	Append-only audit log + IAuditLogger contract + RabbitMQ async write pipeline.
+libraries/audit/rabbitmq-pipeline.md	RabbitMQ async write pipeline — exchange + queue + consumer + dead-letter.
 libraries/billing/index.md	Estimates + invoices + Xero + QuickBooks + token encryption + inventory sync.
 libraries/booking/index.md	Customer bookings + time slots + off-days + availability service.
-libraries/catalog/index.md	Service & Product Catalog spine — vertical-agnostic "what does this tenant sell".
+libraries/catalog/architecture.md	Catalog internal structure — 4 entities, services, EF migration.
+libraries/catalog/consumption.md	Code-level integration walkthrough.
+libraries/catalog/extension-points.md	Extension points — IDbContextProvider, permission overrides, optional time-slot library.
+libraries/catalog/index.md	Service & Product catalog spine — vertical-agnostic "what does this tenant sell".
+libraries/catalog/productvariant-pricing.md	ProductVariant — line items under a Product with SKU + barcode + price.
+libraries/catalog/service-and-product.md	Service and Product entities — top-level catalog units.
+libraries/catalog/serviceitem-fields.md	ServiceItem — line items under a Service. Cost lives here, not on Service.
 libraries/data/index.md	Per-tenant SQLite export.
 libraries/devops-scripts/index.md	DevOps CLI — dev-start, setup-server, setup-ssl, setup-github-envs, db-backup, pre-deploy-check.
 libraries/documents/index.md	Liquid + CSS + Gotenberg PDF pipeline + 4 themes + Document Designer + AI generation.
 libraries/feedback/index.md	Internal customer reviews + Google Reviews integration + weighted aggregate ratings.
+libraries/files/architecture.md	Files library internals — S3Helper, ImageProcessor, FileService, multipart sessions.
+libraries/files/consumption.md	Code-level integration walkthrough.
+libraries/files/db-blob-fallback.md	Legacy DB-blob fallback — pre-S3 photos served directly from blob_data column.
+libraries/files/extension-points.md	Extension points — IS3Helper / IImageProcessor overrides + entity_type strings.
 libraries/files/index.md	S3 + ImageSharp + signed URLs + polymorphic FK + multipart upload + DB-blob fallback.
+libraries/files/multipart-upload.md	Multipart upload — large files via initiate / part / complete protocol.
+libraries/files/polymorphic-fk.md	Polymorphic FK pattern — file.entity_type / entity_id attaches files to any consumer entity.
+libraries/files/signed-urls.md	Signed URL generation — TTL, regeneration, public-read fallbacks.
 libraries/identity/api-keys.md	Asymmetric-key auth — challenge/verify protocol for the Chthonic CLI.
 libraries/identity/architecture.md	Identity library internal structure — 12 entities, ports, services, endpoint groups.
 libraries/identity/auth-flow.md	Login + OAuth + invite + reset-password flows for staff users.
@@ -54,7 +79,14 @@ libraries/parties/customers.md	Customer entity — CRUD + search + linking endpo
 libraries/parties/extension-points.md	Extension points — identity adapter, asset attachment, search hooks.
 libraries/parties/index.md	Customers + addresses + contacts + customer-asset linking.
 libraries/parties/mobile-verification.md	Mobile-based customer linking — identity registers the user; parties links them by mobile.
-libraries/payments/index.md	Provider abstraction + webhook idempotency + Money type. Stripe impl in companion package.
+libraries/payments/architecture.md	Two-package shape (interface + per-provider impl), payment events, idempotency.
+libraries/payments/consumption.md	Code-level integration walkthrough for @chthonic/payments + Stripe.
+libraries/payments/extension-points.md	Extension points — IPaymentProvider for new providers, IPaymentEventHandler for events, IWebhookIdempotencyStore for storage.
+libraries/payments/index.md	Provider abstraction (Stripe + Phase-2 Tap/Square/Razorpay/Adyen) + webhook idempotency + Money type.
+libraries/payments/money-type.md	Money value type — currency + minor-unit amount with arithmetic + equality.
+libraries/payments/provider-abstraction.md	IPaymentProvider interface + how to implement a new provider.
+libraries/payments/stripe-integration.md	Stripe-specific implementation — StripePaymentProvider, webhook endpoint, env var setup.
+libraries/payments/webhook-idempotency.md	Webhook idempotency — duplicate-event detection via DB unique-key insert.
 libraries/support/index.md	Support tickets + CTI routing + GitHub issue sync + IIssueTrackerProvider abstraction.
 libraries/templating/index.md	Liquid engine + validator + AI-output sanitization + iframe isolation.
 libraries/tenant/appversion.md	AppVersion entity + endpoint for mobile force-update / recommended-update detection.
