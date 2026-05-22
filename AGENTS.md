@@ -8,6 +8,8 @@ A thin Kiro-flavoured pointer at [`.kiro/steering/AGENT-CONTEXT.md`](.kiro/steer
 
 The Chthonic platform is a portfolio of **25 shared libraries** (`@chthonic/*` and `@chthonicsystems/*`) extracted from [TorqueTech](https://github.com/chthonicsystems/torquetech) between 2026-04 and 2026-05. The platform powers TorqueTech (the founding product) and Phase-1 sister-products (MarineDeck, FlowLift, PetCare OS).
 
+> **Forward-looking (2026-Q3+):** The [Jobs Enhancements program](https://github.com/chthonicsystems/architecture/tree/main/jobs-enhancements) — 17 feature PRs spec'd in `architecture/jobs-enhancements/` per [`business/products/torquetech/job-enhancements.html`](https://github.com/chthonicsystems/business/blob/main/products/torquetech/job-enhancements.html) v1.2 — will introduce **2 new shared libraries** (`@chthonic/scheduling` for staff-side resource dispatch in PR 08; `@chthonic/inventory` for stock-on-hand tracking in PR 09), bringing the inventory from 25 → 27. Per-library deep-refs for the new libs land in their respective PRs' Phase 5 docs-sync gate (no pre-creation of `libraries/scheduling/` or `libraries/inventory/` folders).
+
 This repo is the **AI-first technical reference** for those libraries. It is **NOT**:
 
 - The decision record for *why* a library exists or *how* it was designed → see [`chthonicsystems/architecture`](https://github.com/chthonicsystems/architecture) (RFCs).
