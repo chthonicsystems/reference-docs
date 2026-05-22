@@ -2,12 +2,12 @@
 library: work
 package-nuget: Chthonic.Work
 package-npm: '@chthonicsystems/work'
-version: 0.1.0
-related-rfcs: [0001]
+version: 0.2.0
+related-rfcs: [0001, 0022]
 related-libs: [tenant, parties, assets, views, notes, audit]
-last-verified: 2026-05-22
-tags: [work-spine, jobs]
-summary: Slimmed Job spine — Job + JobMechanic + JobApproval + auto-comments + status validation.
+last-verified: 2026-05-23
+tags: [work-spine, jobs, qc-signoff]
+summary: Slimmed Job spine — Job + JobMechanic + auto-comments + status validation + v0.2.0 QC sign-off vocabulary (QcSignoff, QcSignoffItemResult, QcRework, IQcSignoffService).
 ---
 
 # `@chthonicsystems/work` / `Chthonic.Work`

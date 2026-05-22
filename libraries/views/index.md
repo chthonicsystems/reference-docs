@@ -2,12 +2,12 @@
 library: views
 package-nuget: Chthonic.Views
 package-npm: '@chthonicsystems/views'
-version: 0.5.0
-related-rfcs: [0010]
+version: 0.6.0
+related-rfcs: [0010, 0022]
 related-libs: [tenant, audit, catalog]
-last-verified: 2026-05-22
-tags: [cross-cutting, custom-fields, views, screens]
-summary: Custom field definitions + per-role view configurations + ScreenSectionsRenderer.
+last-verified: 2026-05-23
+tags: [cross-cutting, custom-fields, views, screens, qc]
+summary: Custom field definitions + per-role view configurations + ScreenSectionsRenderer + v0.6.0 view-kind discriminator + numeric bounds + parent-child structure for QC.
 ---
 
 # `@chthonicsystems/views` / `Chthonic.Views`
