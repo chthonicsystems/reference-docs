@@ -202,8 +202,8 @@ libraries/ui/extension-points.md	Extension points — brand tokens override + pr
 libraries/ui/five-page-patterns.md	5 canonical page patterns — list-row card, detail-hero, dynamic sections, create/edit, inline validation.
 libraries/ui/index.md	Foundational design system — MD3 + app-* primitives + 5 page patterns + customer portal layout + brand tokens.
 libraries/ui/md3-tokens.md	MD3 token layer — colour, typography, shape, elevation as CSS custom properties.
-libraries/views/architecture.md	Views internals — 12 entities, view resolution, entity_type discriminator.
-libraries/views/auto-providers.md	IAutoScreenProvider<T> + IAutoOptionsProvider — runtime sections + dropdown options.
+libraries/views/architecture.md	Views internals — 12 entities, view resolution, entity_type discriminator, per-service variant.
+libraries/views/auto-providers.md	IAutoScreenProvider<T> + IAutoOptionsProvider — runtime sections + dropdown options, with per-service worked example.
 libraries/views/consumption.md	Code-level integration walkthrough.
 libraries/views/custom-fields.md	Custom field definitions — types, visibility rules, dropdown options, linked fields.
 libraries/views/entity-field-discriminator.md	entity_type discriminator + (entity_type, entity_id) polymorphic FK on entity_field_value.

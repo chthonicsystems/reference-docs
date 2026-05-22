@@ -3,8 +3,8 @@ library: views
 version: 0.5.0
 related-rfcs: [0010]
 last-verified: 2026-05-22
-tags: [views, architecture, schema, entity-discriminator]
-summary: Views internals — 12 entities, view resolution, entity_type discriminator.
+tags: [views, architecture, schema, entity-discriminator, per-service-variant]
+summary: Views internals — 12 entities, view resolution, entity_type discriminator, per-service variant.
 ---
 
 # Architecture
@@ -101,6 +101,36 @@ graph TD
     B -->|yes| R2
     B -->|no| C
 ```
+
+## Hierarchy
+
+A view is a four-level tree: a `system_view` row owns one or more `system_entity_field_category` rows (each one a **screen** the user sees), each category owns one or more `system_entity_field_sub_category` rows (each one a **section** within that screen), and each sub-category owns one or more `system_entity_field` rows (the **fields** the user fills in).
+
+```mermaid
+graph TD
+    SV["system_view<br/>(name + entity_type + flags)"]
+    C["system_entity_field_category<br/>(screen)"]
+    SC["system_entity_field_sub_category<br/>(section)"]
+    F["system_entity_field<br/>(field · data_type · is_required)"]
+    LFN["linked_field_name<br/>→ ServiceItem.Cost / Product / …"]
+
+    SV --> C
+    C --> SC
+    SC --> F
+    F -.linked_field_name.-> LFN
+```
+
+`system_entity_field.linked_field_name` is the bridge into the consumer's catalog: when set, the field reads its default value from a named property on a related entity (e.g. `ServiceItem.Cost` populates a price field on a job's parts row). The link is name-based rather than FK-typed so the library stays decoupled from any consumer's catalog schema.
+
+## Per-service variant
+
+A second use of `system_view` is the **per-service variant**: a `system_view` row that represents the layout for a single service in the consumer's catalog rather than for an entity-type as a whole. Consumers add a nullable `service_id` column to `system_view` (and a pair of host-view flags such as `include_service_screens` / `auto_service_screens`) so a host view can opt into merging per-service screens onto the assembled tree at render time.
+
+The composition happens during view resolution. When the host view has `include_service_screens = true`, every linked service on the entity (e.g. each service line on a job) contributes its per-service `system_view` rows on top of the host's own screens. When `auto_service_screens = true` is also set, services that have **no** persisted per-service `system_view` get a synthetic screen built from catalog rows at render time — the library exposes this via `IAutoScreenProvider<TEntity>` (see [`auto-providers.md`](auto-providers.md)). Configured per-service screens take precedence over auto-generated ones for the same service.
+
+### Bootstrap convention
+
+Consumers typically seed a "Default View" with `include_service_screens = true` and `auto_service_screens = true` at tenant-creation time, and point `system.default_view_id` and `system.job_card_view_id` at it. The result is that jobs render correctly without any admin configuration: every service in the catalog gets a per-service screen automatically, with admin-configured screens taking over for any service the workshop wants to customise. Admins only touch the View Wizard when they want to override the defaults.
 
 ## Polymorphic FK pattern
 
