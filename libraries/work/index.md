@@ -2,12 +2,12 @@
 library: work
 package-nuget: Chthonic.Work
 package-npm: '@chthonicsystems/work'
-version: 0.2.0
-related-rfcs: [0001, 0022]
-related-libs: [tenant, parties, assets, views, notes, audit]
+version: 0.3.0
+related-rfcs: [0001, 0022, 0025, 0037]
+related-libs: [tenant, parties, assets, views, notes, audit, notifications]
 last-verified: 2026-05-23
-tags: [work-spine, jobs, qc-signoff]
-summary: Slimmed Job spine — Job + JobMechanic + auto-comments + status validation + v0.2.0 QC sign-off vocabulary (QcSignoff, QcSignoffItemResult, QcRework, IQcSignoffService).
+tags: [work-spine, jobs, qc-signoff, labour-clocking]
+summary: Slimmed Job spine — Job + JobMechanic + auto-comments + status validation + v0.2.0 QC sign-off vocabulary + v0.3.0 LabourEntry timeline (clock-in/out per mechanic).
 ---
 
 # `@chthonicsystems/work` / `Chthonic.Work`
@@ -35,16 +35,19 @@ A `Job` is the unit of work a tenant performs. Cross-product:
 | `IJobApprovalService` | Approval workflow |
 | `IAutoCommentGenerator` | Auto-emits comments on state transitions |
 | `IJobStatusTransitionValidator` | Validates status changes |
+| `IQcSignoffService` (v0.2.0+) | QC sign-off lifecycle (start / submit / rework). See [qc-signoff.md](qc-signoff.md). |
+| `ILabourClockService` (v0.3.0+) | Per-mechanic clock-in / clock-out timeline. Overlap-detect on user; idempotent close. See [labour-clocking.md](labour-clocking.md). |
+| `LabourClockOverlapException` (v0.3.0+) | Typed exception with `OpenLabourEntryId` + `OpenJobId` for 409 mapping |
 | `MapChthonicWorkEndpoints` | (sister-product ready; TT keeps its own) |
-| `services.AddChthonicWork()` | DI entry point |
+| `services.AddChthonicWork()` | DI entry point — auto-registers all services above |
 
-**Domain entities:** `Job`, `JobMechanic`, `JobApproval`, `JobComment`. `JobApproval`/`JobPartsInstalled`/`JobLaundry`/`JobInspection` were dropped as dead code in PR 13.
+**Domain entities:** `Job`, `JobMechanic`, `JobApproval`, `JobComment`, `QcSignoff` / `QcSignoffItemResult` / `QcRework` (v0.2.0+), `LabourEntry` (v0.3.0+; `[AuditParent]` rollup to Job, mirrors the `JobMechanic` precedent). `JobApproval`/`JobPartsInstalled`/`JobLaundry`/`JobInspection` were dropped as dead code in PR 13.
 
 ### npm
 
 | Export | Role |
 |---|---|
-| Types | `Job`, `JobStatus`, `JobMechanicAssignment` |
+| Types | `Job`, `JobStatus`, `JobMechanicAssignment`, `QcSignoff` / `QcSignoffItemResult` / `QcRework` / `QcSignoffStatus` (v0.2.0+), `LabourEntry` (v0.3.0+) |
 | Future | Job-related hooks + components when consumer-extracted |
 
 ## Schema
@@ -119,5 +122,12 @@ var vehicle = (Vehicle)job.Asset;     // TT-side downcast
 
 - [`architecture.md`](architecture.md), [`consumption.md`](consumption.md), [`extension-points.md`](extension-points.md).
 - [`job-spine.md`](job-spine.md), [`auto-comments.md`](auto-comments.md), [`status-transitions.md`](status-transitions.md), [`cross-library-asset-fk.md`](cross-library-asset-fk.md).
+- [`qc-signoff.md`](qc-signoff.md) (v0.2.0+), [`labour-clocking.md`](labour-clocking.md) (v0.3.0+).
 - Library repo: [chthonicsystems/work](https://github.com/chthonicsystems/work).
-- [RFC 0001](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0001-platform-extraction.md).
+- [RFC 0001](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0001-platform-extraction.md), [RFC 0022](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0022-qc-signoff.md), [RFC 0025](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0025-labour-clocking.md).
+
+## Version history
+
+- **0.3.0** (2026-05-23) — Adds `LabourEntry` per-mechanic clock-in / clock-out timeline entity (`[AuditParent]` rollup to Job; one row per work session); `ILabourClockService` (overlap-detect within UserId across all jobs; idempotent ClockOut; ListByJob; GetOpenForUser); `LabourClockOverlapException` (typed for 409 mapping). Empty `_ChthonicWork_0003_LabourEntry` lib migration per coexistence pattern; consumer-side migration owns the `CREATE TABLE labour_entry` DDL. NPM `LabourEntry` TypeScript interface added. No JobStatus changes.
+- **0.2.0** (2026-05-23) — Adds QC sign-off vocabulary (RFC 0022 / F1). JobStatus + 3 (`PendingQcSignoff`, `Reworked`, `QcPassed`). New `IJobStatusTransitionValidator` extension hook. `QcSignoff` / `QcSignoffItemResult` / `QcRework` entities. `IQcSignoffService`.
+- **0.1.0** (2026-05-18) — Initial release.

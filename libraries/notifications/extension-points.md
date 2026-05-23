@@ -1,10 +1,10 @@
 ---
 library: notifications
-version: 0.1.0
-related-rfcs: [0009]
-last-verified: 2026-05-22
+version: 0.2.0
+related-rfcs: [0009, 0025]
+last-verified: 2026-05-23
 tags: [notifications, extension-points]
-summary: Extension points — new channel, custom templates, custom reminder milestones.
+summary: Extension points — new channel, custom templates, custom reminder milestones, open-entry watchdogs.
 ---
 
 # Extension points
@@ -13,6 +13,8 @@ summary: Extension points — new channel, custom templates, custom reminder mil
 |---|---|
 | `INotificationChannel` | Add a new channel (e.g. WhatsApp via Twilio Business API) |
 | `Templates/{key}.liquid` | Add custom template — drop in as embedded resource |
+| `IReminderRule` (v0.1.x+) | Daily 02:00 UTC scan; one rule per milestone family |
+| `IOpenEntryWatchdog` (v0.2.0+) | Sub-daily background scan with per-watchdog `ScanInterval`; per-UTC-day-bucketed idempotency. See [open-entry-watchdog.md](open-entry-watchdog.md). |
 | `ReminderScheduler` schedule | Override DI options to change milestone offsets |
 | `INotificationLogger` | Override write semantics (e.g. additional analytics integration) |
 
@@ -57,6 +59,52 @@ builder.Services.AddChthonicNotifications(opts =>
 });
 ```
 
+## Open-entry watchdogs (v0.2.0+)
+
+Sub-daily sibling of `IReminderRule`. For each watchdog, the
+scheduler runs `ScanAsync(nowUtc, ct)` on the configured
+`ScanInterval` (typically 15 minutes) and dispatches each
+returned `OpenEntryHit` via the existing `INotificationPublisher` —
+with idempotency via the existing `notification_log` composite
+index using a per-UTC-day-bucketed key
+(`"{ReminderMilestone}-{yyyy-MM-dd}"`).
+
+```csharp
+public sealed class TTLabourClockOpen8hWatchdog : IOpenEntryWatchdog
+{
+    private readonly TorqueTechDbContext _db;
+    public string Name => "LabourClockOpen8h";
+    public TimeSpan ScanInterval => TimeSpan.FromMinutes(15);
+
+    public async Task<IReadOnlyList<OpenEntryHit>> ScanAsync(DateTime nowUtc, CancellationToken ct)
+    {
+        var threshold = nowUtc.AddHours(-8);
+        var rows = await _db.LabourEntries
+            .Where(l => l.ClockOutAt == null && l.ClockInAt < threshold)
+            .Join(_db.Jobs, l => l.JobId, j => j.JobId, (l, j) => new { l, j.JobNumber })
+            .ToListAsync(ct);
+
+        return rows.Select(r => new OpenEntryHit(
+            EntityType: "LabourEntry",
+            EntityId: r.l.LabourEntryId,
+            UserId: r.l.UserId,
+            TemplateKey: "labour.clock-open-8h",
+            ReminderMilestone: "LabourClockOpen8h",
+            TemplateData: new Dictionary<string, object>
+            {
+                ["JobNumber"] = r.JobNumber,
+                ["DurationOpen"] = FormatDuration(nowUtc - r.l.ClockInAt),
+            })).ToList();
+    }
+}
+
+services.RegisterOpenEntryWatchdog<TTLabourClockOpen8hWatchdog>();
+```
+
+The deep-ref [open-entry-watchdog.md](open-entry-watchdog.md) covers
+the idempotency contract, the cadence rationale, and the F4 + F12
+consumer pattern.
+
 ## Related
 
-- [`multi-channel-publisher.md`](multi-channel-publisher.md), [`reminders.md`](reminders.md).
+- [`multi-channel-publisher.md`](multi-channel-publisher.md), [`reminders.md`](reminders.md), [`open-entry-watchdog.md`](open-entry-watchdog.md).
