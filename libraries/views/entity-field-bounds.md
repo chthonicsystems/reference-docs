@@ -87,9 +87,32 @@ QC view base-fields are validated at save: types not in `{boolean, boolean-attac
 - **QC submit path** (`Chthonic.Work.Services.QcSignoffService.SubmitSignoffAsync` v0.2.0+): runs `FieldBoundsValidator.Check` on numeric values; stores raw value with derived `Passes`; auto-creates `QcRework` row with the `reason` string on failure.
 - **Field editor UI** (`SectionFields` in TorqueTech): exposes Min / Max / Unit inputs when the user picks a numeric type. Validation surfaces inline as the admin types.
 
+## v0.8.0 — `ExcludeFromQc` per-field opt-out (PR 18 / RFC 0022 § 12)
+
+A peer companion to the bounds metadata: `EntityField.ExcludeFromQc` (`bool`, default `false`) is a per-field flag that drops a field (and its children, if any) from the QC eligibility tree even when its `Type` would otherwise qualify.
+
+**Read only on top-level fields** (`ParentFieldId IS NULL`). Setting it on a child row is a no-op (UI hides the toggle on child rows; dead `true` data on a child is harmless because the eligibility tree only consults it on top-level fields).
+
+The 3-step eligibility decision tree applied per top-level field:
+
+```
+1. field.ExcludeFromQc = true         → DROP subtree entirely
+2. Has direct children                 → use children, filtered to QcEligibleTypes
+3. No children                         → keep self if Type ∈ QcEligibleTypes AND Type ≠ "empty"
+```
+
+| Set on | Effect |
+|---|---|
+| Top-level **leaf** (no children) | Drops the field |
+| Top-level **parent** (has children) | Drops the parent AND all its children (subtree-level) |
+| **Child** field | Irrelevant — never read |
+
+Consumer responsibility: the eligibility tree lives in `Chthonic.Work` / `JobFieldsViewService.AppendVirtualServiceScreensInternal` (TT-side) — `@chthonic/views` exposes the column + the `QcEligibleTypes` constant, but doesn't enforce eligibility itself (consumers compose).
+
 ## Refs
 
 - RFC 0022 § 2 (Decision) — view-with-kind hybrid + bounds-on-EntityField rationale
+- RFC 0022 § 12 Amendment 1 — `ExcludeFromQc` rationale + 3-step eligibility decision tree
 - RFC 0023 — F2 Tolerance validation (consumer; no further schema bumps needed because v0.6.0 already shipped the columns)
 - RFC 0024 — F3 Photo-evidence-required QC items (consumer; uses the `*-attachment` types)
 - `@chthonic/work` v0.2.0 — `QcSignoffService.SubmitSignoffAsync` is the canonical QC consumer of `FieldBoundsValidator`

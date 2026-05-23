@@ -127,6 +127,20 @@ import { sections } from './configHubSections';   // consumer-supplied
 
 Full walkthrough in [`consumption.md`](consumption.md).
 
+## v0.7.0 — `System.DefaultQcViewId` (PR 18 / RFC 0022 § 12)
+
+Adds the tenant-level QC view pointer for the QC sign-off redesign.
+
+| Schema delta | Notes |
+|---|---|
+| `System.DefaultQcViewId` (`int?`, snake-case `default_qc_view_id`) | Mirrors existing `DefaultViewId` / `QuickViewId` / `JobCardViewId` pattern: nullable int FK column, no typed nav (consumers navigate by ID via their own DbContext). The actual FK constraint with `ON DELETE RESTRICT` is added consumer-side (TorqueTech's PR 18 migration). |
+
+The placeholder migration `ChthonicTenant_0004_DefaultQcView` is empty Up/Down per the migration-coexistence pattern (see [`@chthonic/views` v0.6.0](../views/index.md#v060--qc-view-kind-pr-01-rfc-0022)).
+
+The pointer is set at signup unconditionally for ALL tiers (`DefaultQcViewId = DefaultViewId` initially). The `JobsQc` feature flag continues to gate visibility independently — Free tenants get the pointer but no flag, so QC affordances stay hidden until sysadmin opt-in via `FeatureOverride`.
+
+See [RFC 0022 § 12 Amendment 1](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0022-qc-signoff.md#12-amendment-1--f1b-qc-view-defaults--opt-out-2026-05-24) for the design rationale.
+
 ## Related
 
 - [`architecture.md`](architecture.md) — entities, ports, services.
