@@ -1,10 +1,10 @@
 ---
 library: work
-version: 0.1.0
-related-rfcs: [0001]
-last-verified: 2026-05-22
+version: 0.3.0
+related-rfcs: [0001, 0022, 0025]
+last-verified: 2026-05-23
 tags: [work, architecture]
-summary: Work internals — Job spine, mechanic assignment, auto-comment generator.
+summary: Work internals — Job spine, mechanic assignment, auto-comment generator, QC vocabulary (v0.2.0+), LabourEntry timeline (v0.3.0+).
 ---
 
 # Architecture
@@ -16,16 +16,24 @@ src/Chthonic.Work/
 │   ├── JobMechanic.cs
 │   ├── JobComment.cs
 │   ├── JobApproval.cs
-│   └── JobStatus.cs
-├── Configuration/             # EF configs
+│   ├── JobStatus.cs
+│   ├── QcSignoff.cs                    (v0.2.0+)
+│   ├── QcSignoffItemResult.cs          (v0.2.0+)
+│   ├── QcRework.cs                     (v0.2.0+)
+│   ├── QcSignoffStatus.cs              (v0.2.0+)
+│   └── LabourEntry.cs                  (v0.3.0+; [AuditParent] rollup to Job)
+├── Configuration/             # EF configs (incl. LabourEntryConfiguration v0.3.0+)
 ├── Services/
 │   ├── IJobService.cs / JobService.cs
 │   ├── IJobMechanicService.cs / JobMechanicService.cs
 │   ├── IJobApprovalService.cs / JobApprovalService.cs
 │   ├── IAutoCommentGenerator.cs / AutoCommentGenerator.cs
-│   └── IJobStatusTransitionValidator.cs
+│   ├── IJobStatusTransitionValidator.cs
+│   ├── IQcSignoffService.cs / QcSignoffService.cs    (v0.2.0+)
+│   ├── ILabourClockService.cs / LabourClockService.cs (v0.3.0+)
+│   └── LabourClockOverlapException.cs                (v0.3.0+)
 ├── Endpoints/                 # sister-product ready
-├── Migrations/
+├── Migrations/                # incl. _ChthonicWork_0003_LabourEntry (empty per coexistence)
 └── ServiceCollectionExtensions.cs
 ```
 

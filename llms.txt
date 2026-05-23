@@ -147,13 +147,14 @@ libraries/notes/index.md	Entity annotations with polymorphic FK + threading + un
 libraries/notes/polymorphic-attachment.md	Polymorphic attachment — note.entity_type / entity_id attaches notes to any consumer entity.
 libraries/notes/threading.md	Threading via parent_note_id — schema room ships at v0.1.0; UI + service deferred to v0.2.0+.
 libraries/notes/unread-tracking.md	Unread tracking — deferred to v0.2.0+. Schema design captured for forward-compat.
-libraries/notifications/architecture.md	Notifications internals — publisher, channels, templates, reminders, comms.
+libraries/notifications/architecture.md	Notifications internals — publisher, channels, templates, reminders, sub-daily watchdog, comms.
 libraries/notifications/communications-panel.md	<CommunicationsInbox> — in-app notification inbox component.
 libraries/notifications/consumption.md	Code-level integration walkthrough.
-libraries/notifications/extension-points.md	Extension points — new channel, custom templates, custom reminder milestones.
-libraries/notifications/index.md	Multi-channel publisher (push/email/SMS/in-app) + Liquid templates + reminders + comms.
+libraries/notifications/extension-points.md	Extension points — new channel, custom templates, custom reminder milestones, open-entry watchdogs.
+libraries/notifications/index.md	Multi-channel publisher (push/email/SMS/in-app) + Liquid templates + daily reminders + sub-daily open-entry watchdog primitive + comms.
 libraries/notifications/liquid-templates.md	Email/SMS template rendering — Liquid + locale filters preloaded.
 libraries/notifications/multi-channel-publisher.md	INotificationPublisher — single send API across email/SMS/push/in-app.
+libraries/notifications/open-entry-watchdog.md	Sub-daily background-scan primitive for forgotten-open-entry style notifications. Sibling of the daily ReminderScheduler.
 libraries/notifications/reminders.md	ReminderScheduler — daily 02:00 UTC; idempotent via composite index.
 libraries/parties/addresses.md	Customer address fields + country normalisation + downstream consumers.
 libraries/parties/architecture.md	Customer + CustomerAsset entities, schema, services.
@@ -206,15 +207,18 @@ libraries/views/architecture.md	Views internals — 12 entities, view resolution
 libraries/views/auto-providers.md	IAutoScreenProvider<T> + IAutoOptionsProvider — runtime sections + dropdown options, with per-service worked example.
 libraries/views/consumption.md	Code-level integration walkthrough.
 libraries/views/custom-fields.md	Custom field definitions — types, visibility rules, dropdown options, linked fields.
+libraries/views/entity-field-bounds.md	Numeric bounds metadata on EntityField (MinValue/MaxValue/Unit) — dual-purpose save-time / result-time semantics with FieldBoundsValidator.
 libraries/views/entity-field-discriminator.md	entity_type discriminator + (entity_type, entity_id) polymorphic FK on entity_field_value.
 libraries/views/extension-points.md	Extension points — IAutoScreenProvider<T>, IAutoOptionsProvider, IDbContextProvider, http adapter.
-libraries/views/index.md	Custom field definitions + per-role view configurations + ScreenSectionsRenderer.
+libraries/views/index.md	Custom field definitions + per-role view configurations + ScreenSectionsRenderer + v0.6.0 view-kind discriminator + numeric bounds + parent-child structure for QC.
 libraries/views/screen-sections-renderer.md	<ScreenSectionsRenderer> — dynamic field renderer that respects view resolution + role visibility.
-libraries/work/architecture.md	Work internals — Job spine, mechanic assignment, auto-comment generator.
+libraries/work/architecture.md	Work internals — Job spine, mechanic assignment, auto-comment generator, QC vocabulary (v0.2.0+), LabourEntry timeline (v0.3.0+).
 libraries/work/auto-comments.md	AutoCommentGenerator — system-emitted comments on every status transition.
 libraries/work/consumption.md	Code-level integration walkthrough.
 libraries/work/cross-library-asset-fk.md	Job.Asset typed as polymorphic Asset base — consumer downcasts at the call site.
-libraries/work/extension-points.md	Extension points — IJobStatusTransitionValidator, IAutoCommentGenerator, IJobNumberGenerator.
-libraries/work/index.md	Slimmed Job spine — Job + JobMechanic + JobApproval + auto-comments + status validation.
+libraries/work/extension-points.md	Extension points — IJobStatusTransitionValidator, IJobStatusChangedHandler (auto-clock-out), IAutoCommentGenerator, IJobNumberGenerator, IOpenEntryWatchdog (forgotten-clock-out).
+libraries/work/index.md	Slimmed Job spine — Job + JobMechanic + auto-comments + status validation + v0.2.0 QC sign-off vocabulary + v0.3.0 LabourEntry timeline (clock-in/out per mechanic).
 libraries/work/job-spine.md	Job spine — what the slimmed v0.1.0 owns vs split-off concerns.
+libraries/work/labour-clocking.md	LabourEntry timeline + ILabourClockService — per-mechanic clock-in / clock-out per job. Audit auto-rollup to Job via [AuditParent].
+libraries/work/qc-signoff.md	QC sign-off & rework round-trip — per-attempt audit + auto-derive Passes from FieldBoundsValidator + rework loop integration with JobStatus state machine. v0.2.0+.
 libraries/work/status-transitions.md	Job status transitions — three statuses, valid moves, status-specific permissions.
