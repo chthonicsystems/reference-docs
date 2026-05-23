@@ -88,9 +88,52 @@ setHttpAdapter(httpService);
 <ScreenSectionsRenderer entityType="Job" entityId={jobId} systemId={systemId} userId={userId} />
 ```
 
+## v0.6.0 — QC view kind (PR 01 / RFC 0022)
+
+| Schema delta | Notes |
+|---|---|
+| `View.Kind` (`varchar(20)`, default `"operational"`) | Discriminator. `"operational"` (default) or `"qc"`. F1b deprecates this on top-level views (`ServiceId IS NULL`) but keeps it for service-scoped views. |
+| `EntityField.MinValue` / `MaxValue` (`decimal(18,6)?`) + `Unit` (`varchar(20)?`) | Generic numeric bounds. Operational save-time validation; QC submit-time `Passes` derivation via `FieldBoundsValidator`. |
+| `EntityField.ParentFieldId` (`int?`, self-FK with `ON DELETE CASCADE`) | One-level only — children replace parent in QC views. |
+| Type set extends with `boolean-attachment`, `number-attachment`, `empty` | New widget shapes for QC checks. |
+
+`FieldBoundsValidator` (static helper) + `QcEligibleTypes` constant. Save-time validation in `IViewService.SaveAsync` and `IEntityFieldService.SaveAsync`.
+
+## v0.8.0 — QC defaults & opt-out (PR 18 / RFC 0022 § 12 Amendment 1)
+
+Refines F1's view-selection model after production learnings.
+
+| Schema delta | Notes |
+|---|---|
+| `SystemRoleView.QcViewId` (`int?` FK to `system_view`, `ON DELETE RESTRICT`) | Per-role QC view override. Mirrors `DefaultViewId` / `QuickViewId` / `JobCardViewId`. New pointers get RESTRICT (decision A=2 — old pointers keep `SET NULL`). |
+| `EntityField.ExcludeFromQc` (`bool`, default `false`) | Per-field opt-out. Read only on top-level fields by the eligibility tree. UI hides the toggle on child rows. |
+
+`ScreenSectionsRenderer` gains a `kind?: 'operational' | 'qc'` prop with a `(Type, kind)` widget dispatch matrix:
+
+- `boolean` / `boolean-attachment` × `qc` → `CheckboxField` + optional photo slot
+- `number` / `number-attachment` × `qc` → `NumericField` + tolerance display + optional photo slot
+- non-QC-eligible × `qc` → dropped (defensive — server-side eligibility tree should already have stripped these)
+
+Top-level views are kind-neutral — any view can render in either kind. Eligibility tree (in consumer-side `JobFieldsViewService`):
+
+```
+1. field.ExcludeFromQc = true → DROP subtree
+2. Has direct children → use children, filtered to QcEligibleTypes
+3. No children → keep self if Type ∈ QcEligibleTypes AND Type ≠ "empty"
+```
+
+### Patch releases (UX polish from production usage)
+
+- **v0.8.1** — `FieldEditModal` copy: "QC parent (optional)" → "Part of a QC group (optional)"; "Empty (anchor for QC checks)" → "Group (no value — organises QC checks)"; helper text rewritten in plain English.
+- **v0.8.2** — Drop "Only one level of grouping is allowed" from picker hint (the constraint is enforced anyway by `parentCandidates` filtering).
+- **v0.8.3** — `FieldsManager` shows QC group children inline as click-to-edit chips under each parent row. `parentFieldId` exposed on `FieldData` type.
+
+See [RFC 0022 § 12 Amendment 1](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0022-qc-signoff.md#12-amendment-1--f1b-qc-view-defaults--opt-out-2026-05-24) for the full design rationale.
+
 ## Related
 
 - [`architecture.md`](architecture.md), [`consumption.md`](consumption.md), [`extension-points.md`](extension-points.md).
-- [`custom-fields.md`](custom-fields.md), [`entity-field-discriminator.md`](entity-field-discriminator.md), [`screen-sections-renderer.md`](screen-sections-renderer.md), [`auto-providers.md`](auto-providers.md).
+- [`custom-fields.md`](custom-fields.md), [`entity-field-discriminator.md`](entity-field-discriminator.md), [`entity-field-bounds.md`](entity-field-bounds.md), [`screen-sections-renderer.md`](screen-sections-renderer.md), [`auto-providers.md`](auto-providers.md).
 - Library repo: [chthonicsystems/views](https://github.com/chthonicsystems/views).
 - [RFC 0010](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0010-views-and-custom-fields.md).
+- [RFC 0022](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0022-qc-signoff.md) — QC sign-off, including § 12 Amendment 1 for v0.8.x changes.
