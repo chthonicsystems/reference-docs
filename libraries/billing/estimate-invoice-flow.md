@@ -44,6 +44,18 @@ graph LR
 
 When an invoice is `Sent`, the consumer's wired `IAccountingProvider.PushInvoiceAsync` fires (background or sync). The remote ID is stored in `invoice.metadata['xero_invoice_id']` etc. for later push-payment correlation.
 
+## Consumer extension — TT job-scoped extra-work approval (PR 03 / RFC 0026)
+
+TorqueTech composes the existing primitives into a job-scoped composite endpoint that creates an estimate revision mid-job:
+
+- `POST /api/jobs/{id}/approval/request { additionalItems[] }` — TT-owned route that, while a Job is `InProgress`, creates a new revision of the Job's Estimate (`(SequenceNumber, RevisionNumber+1)`) carrying forward existing line items + appending the new ones, sets `Status=Sent`, then calls `IDocumentService.RenderDocumentAsync` and the existing send-to-customer notification path.
+- `GET /api/jobs/{id}/approval/status` — read-only companion that returns derived state (`none | pending | approved | declined`) computed from the revision history. No flag column.
+- The customer-side approve/reject loop reuses `PUT /api/documents/{id}/approve|reject` unchanged; that endpoint already cascades to `Estimate.Status` and fires `NotifyEstimateApprovedAsync` / `NotifyEstimateRejectedAsync`.
+
+**No public surface in `@chthonic/billing` changes** — the feature is a pure consumer-side composition. Sister products that adopt the same pattern would either replicate the TT-side endpoint or, if the demand is broad, lift it to `@chthonic/work` as a generic `RequestApprovalAsync` on the Job spine.
+
+**No schema delta** — Estimate gets no new columns. Mid-job-ness is purely derived: "exists a prior revision in the same sequence with `Status=Approved`".
+
 ## Related
 
 - [`xero-integration.md`](xero-integration.md), [`quickbooks-integration.md`](quickbooks-integration.md).
