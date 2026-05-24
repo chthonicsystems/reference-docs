@@ -127,8 +127,16 @@ Top-level views are kind-neutral — any view can render in either kind. Eligibi
 - **v0.8.1** — `FieldEditModal` copy: "QC parent (optional)" → "Part of a QC group (optional)"; "Empty (anchor for QC checks)" → "Group (no value — organises QC checks)"; helper text rewritten in plain English.
 - **v0.8.2** — Drop "Only one level of grouping is allowed" from picker hint (the constraint is enforced anyway by `parentCandidates` filtering).
 - **v0.8.3** — `FieldsManager` shows QC group children inline as click-to-edit chips under each parent row. `parentFieldId` exposed on `FieldData` type.
+- **v0.8.4** — Expand `QC` to `Quality Control` in user-facing copy (modal labels, hint text). Internal types / class names keep the abbreviation.
+- **v0.8.5** — `QcNoteButton` + per-field note storage. Hides quantity/amount fields in QC kind dispatch.
+- **v0.8.6** — `deriveAllPassing` client-side util — given fields + values, returns `{ allPassing: bool, failingCount: number }`. Lets consumers split the supervisor button (Sign Off when `allPassing`, Send for Rework otherwise) without re-implementing the logic.
+- **v0.8.7** — `ReadOnlyField` always renders the label, no hide-when-empty. Read-only QC view used to render an empty `<div>` when a field had no value, breaking row alignment in the renderer.
+- **v0.8.8** — `getFieldValues()` becomes QC-aware. Was filtering by operational `isFieldEditable(jobStatus)` returning `false` for non-`InProgress`, dropping all values for the supervisor's QC view. Now uses type-based eligibility for the QC kind.
+- **v0.8.9** — `QcNoteModal` restyle. Drops the explanation paragraph, adopts `app-modal-header` / `app-modal-body` shell, adds Escape-to-close.
+- **v0.8.10** — QC dispatch honours `readonly` prop. Was always emitting `CheckboxField` / `NumericField`; now routes to `ReadOnlyField` when `readonly=true` so a viewer-side render of a closed-out QC sign-off doesn't accidentally surface editable controls.
+- **v0.8.11** — Read-only QC hides the note chip when the item failed. The `failReason` rendered inside the result pill already surfaces the supervisor's text; rendering it twice (chip + reason) looked like a duplicate. Passing items with notes still show the chip.
 
-See [RFC 0022 § 12 Amendment 1](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0022-qc-signoff.md#12-amendment-1--f1b-qc-view-defaults--opt-out-2026-05-24) for the full design rationale.
+See [RFC 0022 § 12 Amendment 1](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0022-qc-signoff.md#12-amendment-1--f1b-qc-view-defaults--opt-out-2026-05-24) for the full design rationale. v0.8.4 through v0.8.11 are UX polish patches landed during the F1c/F1d work tracked in [RFC 0022 § 13 Amendment 2](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0022-qc-signoff.md#13-amendment-2--f1cf1d-state-machine-simplification--reopen-tracking--rework-badge-2026-05-24).
 
 ## Related
 
