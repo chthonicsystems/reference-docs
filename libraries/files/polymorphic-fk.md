@@ -11,6 +11,12 @@ summary: Polymorphic FK pattern — file.entity_type / entity_id attaches files 
 
 The `file` table uses `(entity_type, entity_id)` to attach files to any entity in any library without a FK constraint.
 
+> **v0.2.0+ generalization.** Files now also carry an optional
+> `(sub_entity_type, sub_entity_id)` pair for child-concept ownership.
+> See [`sub-entity-fk.md`](sub-entity-fk.md) for the two-level pattern
+> (used by F3 QC evidence to attach to a `qc_signoff_item_result`
+> while keeping the primary FK on `Job`).
+
 ## Schema
 
 ```sql

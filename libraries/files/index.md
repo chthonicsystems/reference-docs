@@ -2,7 +2,7 @@
 library: files
 package-nuget: Chthonic.Files
 package-npm: '@chthonicsystems/files'
-version: 0.1.2
+version: 0.2.0
 related-rfcs: [0007]
 related-libs: [audit, tenant]
 last-verified: 2026-05-22
@@ -53,6 +53,9 @@ file
   system_id         int FK
   entity_type       varchar(50)    'Job', 'Vehicle', 'Customer', 'Note', 'Vessel', 'Pet', ...
   entity_id         int
+  sub_entity_type   varchar(50)?   v0.2.0+ — secondary owner ('QcSignoffItem', 'Walkaround', ...)
+  sub_entity_id     int?           v0.2.0+ — paired with sub_entity_type
+  purpose           int            FilePurpose enum (Photo, Video [v0.2.0+], Document, Avatar, Logo, ...)
   filename          varchar(255)
   content_type      varchar(100)
   size_bytes        bigint
@@ -62,8 +65,9 @@ file
   uploaded_at       datetime
   deleted_at        datetime?
 
-  index ix_file_entity (entity_type, entity_id)
-  index ix_file_system (system_id)
+  index ix_file_entity     (entity_type, entity_id)         -- existing primary FK index
+  index ix_file_sub_entity (sub_entity_type, sub_entity_id) -- v0.2.0+ secondary FK index
+  index ix_file_system     (system_id)
 
 multipart_upload_session
   session_id        varchar(36) PK
@@ -113,6 +117,6 @@ import { FileGallery, FileUploadButton } from '@chthonicsystems/files';
 ## Related
 
 - [`architecture.md`](architecture.md), [`consumption.md`](consumption.md), [`extension-points.md`](extension-points.md).
-- [`polymorphic-fk.md`](polymorphic-fk.md), [`signed-urls.md`](signed-urls.md), [`multipart-upload.md`](multipart-upload.md), [`db-blob-fallback.md`](db-blob-fallback.md).
+- [`polymorphic-fk.md`](polymorphic-fk.md), [`sub-entity-fk.md`](sub-entity-fk.md) (v0.2.0+), [`qc-evidence.md`](qc-evidence.md) (TT pattern), [`signed-urls.md`](signed-urls.md), [`multipart-upload.md`](multipart-upload.md), [`db-blob-fallback.md`](db-blob-fallback.md).
 - Library repo: [chthonicsystems/files](https://github.com/chthonicsystems/files).
 - [RFC 0007](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0007-files-and-uploads.md).

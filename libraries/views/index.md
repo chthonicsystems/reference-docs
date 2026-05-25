@@ -2,12 +2,12 @@
 library: views
 package-nuget: Chthonic.Views
 package-npm: '@chthonicsystems/views'
-version: 0.8.12
-related-rfcs: [0010, 0022, 0023]
-related-libs: [tenant, audit, catalog]
-last-verified: 2026-05-25
-tags: [cross-cutting, custom-fields, views, screens, qc, tolerance]
-summary: Custom field definitions + per-role view configurations + ScreenSectionsRenderer + v0.6.0 view-kind discriminator + numeric bounds + parent-child structure for QC + v0.8.12 lifted operational-mode tolerance hint.
+version: 0.8.13
+related-rfcs: [0010, 0022, 0023, 0024]
+related-libs: [tenant, audit, catalog, files]
+last-verified: 2026-05-26
+tags: [cross-cutting, custom-fields, views, screens, qc, tolerance, evidence]
+summary: Custom field definitions + per-role view configurations + ScreenSectionsRenderer + v0.6.0 view-kind discriminator + numeric bounds + parent-child structure for QC + v0.8.12 lifted operational-mode tolerance hint + v0.8.13 renderQcAttachmentSlot prop for host-supplied evidence slots.
 ---
 
 # `@chthonicsystems/views` / `Chthonic.Views`

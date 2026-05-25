@@ -76,3 +76,28 @@ Subsequent edits → 1 PUT per field-change (debounced).
 - [`auto-providers.md`](auto-providers.md) — auto-section integration.
 - [`extension-points.md`](extension-points.md) — http adapter setup.
 - [`custom-fields.md`](custom-fields.md), [`entity-field-discriminator.md`](entity-field-discriminator.md).
+- [`tolerance-bounds.md`](tolerance-bounds.md) — v0.8.12 lifted operational-mode tolerance hint.
+
+## v0.8.13 — `renderQcAttachmentSlot` prop (PR 05 / RFC 0024 § 12 Amendment 1)
+
+Hosts can now mount their own evidence slot for `boolean-attachment`
+/ `number-attachment` QC fields via:
+
+```tsx
+<ScreenSectionsRenderer
+  kind="qc"
+  qcResults={qcResultsWithIds}
+  renderQcAttachmentSlot={({ field, qcSignoffItemResultId }) => (
+    <QcEvidenceSlot field={field} qcSignoffItemResultId={qcSignoffItemResultId} />
+  )}
+/>
+```
+
+`qcResults` entries gain an optional `qcSignoffItemResultId` field
+that the renderer forwards to the prop. When the prop is omitted the
+renderer falls back to the empty placeholder div from v0.8.12 (back-
+compat preserved).
+
+See [`../files/qc-evidence.md`](../files/qc-evidence.md) for the TT
+consumer pattern that wires this prop to `<FileGallery filterBySubEntity>`
+and `useMediaCapture`.
