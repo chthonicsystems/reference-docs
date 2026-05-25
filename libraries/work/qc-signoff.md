@@ -161,5 +161,8 @@ public sealed class TTJobStatusTransitionValidator : IJobStatusTransitionValidat
 ## Refs
 
 - RFC 0022 — Quality Control sign-off & rework round-trip (Accepted 2026-05-23). Full design including the 8-alternative refinement journey in § 10.
+- RFC 0024 § 12 Amendment 1 — F3 Photo + Video QC Evidence (PR 05). The work lib stays evidence-agnostic: `QcItemResult.FileIds` plumbing slot is consumed by TT-side `QcSignoffOrchestrator.BindFilesToResultsAsync`, which tags file rows via `@chthonicsystems/files` v0.2.0's two-level polymorphic FK (`sub_entity_type='QcSignoffItem'`). For the full TT consumer pattern see [`../files/qc-evidence.md`](../files/qc-evidence.md).
 - `@chthonic/views` v0.6.0 — provides `View.Kind` discriminator, `EntityField.MinValue/MaxValue/Unit/ParentFieldId`, `FieldBoundsValidator` utility (consumed by `QcSignoffService.SubmitSignoffAsync`). For the F2 product surface (operational + QC dual-mode tolerance display, lifted `<NumericField>` hint, RFC 0023 architectural divergence record) see [`../views/tolerance-bounds.md`](../views/tolerance-bounds.md).
+- `@chthonic/views` v0.8.13 — `renderQcAttachmentSlot` prop on `<ScreenSectionsRenderer>`; PR 05 wiring point for evidence slots. See [`../views/screen-sections-renderer.md`](../views/screen-sections-renderer.md).
+- `@chthonicsystems/mobile-runtime` v0.3.0 — `useMediaCapture` (photo + video). See [`../mobile-runtime/media-capture.md`](../mobile-runtime/media-capture.md).
 - TorqueTech `feat/01-F1-qc-signoff` PR — primary consumer.

@@ -102,7 +102,9 @@ libraries/files/extension-points.md	Extension points — IS3Helper / IImageProce
 libraries/files/index.md	S3 + ImageSharp + signed URLs + polymorphic FK + multipart upload + DB-blob fallback.
 libraries/files/multipart-upload.md	Multipart upload — large files via initiate / part / complete protocol.
 libraries/files/polymorphic-fk.md	Polymorphic FK pattern — file.entity_type / entity_id attaches files to any consumer entity.
+libraries/files/qc-evidence.md	TT-specific QC evidence pattern — sub_entity_type='QcSignoffItem' + Purpose=Photo|Video + per-tenant MaxVideoSizeBytes tier_limit + cross-page surface on Job Photos.
 libraries/files/signed-urls.md	Signed URL generation — TTL, regeneration, public-read fallbacks.
+libraries/files/sub-entity-fk.md	v0.2.0 generalization of the polymorphic FK pattern to two levels — primary owner + optional secondary owner.
 libraries/identity/api-keys.md	Asymmetric-key auth — challenge/verify protocol for the Chthonic CLI.
 libraries/identity/architecture.md	Identity library internal structure — 12 entities, ports, services, endpoint groups.
 libraries/identity/auth-flow.md	Login + OAuth + invite + reset-password flows for staff users.
@@ -137,6 +139,7 @@ libraries/mobile-runtime/deep-links.md	setupDeepLinks — Capacitor App plugin a
 libraries/mobile-runtime/extension-points.md	Extension points — initMobileRuntime opts, fcmTokenCallback, biometric prompt config.
 libraries/mobile-runtime/force-update.md	checkForceUpdate — query /api/app-version/latest at app launch; gate UI if version too old.
 libraries/mobile-runtime/index.md	Capacitor runtime — push, deep-link, force-update, biometric, camera/file, version sync. npm-only.
+libraries/mobile-runtime/media-capture.md	useMediaCapture() — unified namespace returning { capturePhoto, captureVideo, pickFromLibrary, isVideoSupported }. Photo via @capacitor/camera; video via HTML5 input[capture].
 libraries/mobile-runtime/push-notifications.md	registerPushNotifications — Firebase Cloud Messaging registration + foreground/background handlers.
 libraries/mobile-runtime/version-sync.md	getResolvedVersion — reads web/app_version.json + platform-specific override.
 libraries/notes/architecture.md	Notes internals — Note entity, polymorphic FK, threading + unread (deferred to v0.2.0+).
@@ -193,6 +196,7 @@ libraries/tenant/consumption.md	Code-level integration walkthrough for @chthonic
 libraries/tenant/entitlements.md	Generic entitlements — tier_limit + tier_feature + feature_override + quota_usage. Data-driven flags + limits.
 libraries/tenant/extension-points.md	Tenant extension points — sections, signup handler, entitlement adders.
 libraries/tenant/index.md	Multi-tenant root + Config Hub admin shell + generic entitlements + AppVersion + SmartLink.
+libraries/tenant/seeds.md	v0.8.0+ — platform library owns schema only; consumer applications own tier policy via their own seed migrations.
 libraries/tenant/smartlink.md	SmartLink — universal-link redirects + iOS/Android deep-link infrastructure.
 libraries/ui/app-primitives.md	app-* primitive components — cards, modals, toasts, fields, search, filter pills.
 libraries/ui/architecture.md	UI library internals — CSS file ownership, primitive promotion rules.
@@ -210,7 +214,7 @@ libraries/views/custom-fields.md	Custom field definitions — types, visibility 
 libraries/views/entity-field-bounds.md	Numeric bounds metadata on EntityField (MinValue/MaxValue/Unit) — dual-purpose save-time / result-time semantics with FieldBoundsValidator.
 libraries/views/entity-field-discriminator.md	entity_type discriminator + (entity_type, entity_id) polymorphic FK on entity_field_value.
 libraries/views/extension-points.md	Extension points — IAutoScreenProvider<T>, IAutoOptionsProvider, IDbContextProvider, http adapter.
-libraries/views/index.md	Custom field definitions + per-role view configurations + ScreenSectionsRenderer + v0.6.0 view-kind discriminator + numeric bounds + parent-child structure for QC + v0.8.12 lifted operational-mode tolerance hint.
+libraries/views/index.md	Custom field definitions + per-role view configurations + ScreenSectionsRenderer + v0.6.0 view-kind discriminator + numeric bounds + parent-child structure for QC + v0.8.12 lifted operational-mode tolerance hint + v0.8.13 renderQcAttachmentSlot prop for host-supplied evidence slots.
 libraries/views/qc-resolution.md	4-stop server-side QC view resolution chain + 3-step eligibility tree + ScreenSectionsRenderer kind-aware dispatch.
 libraries/views/screen-sections-renderer.md	<ScreenSectionsRenderer> — dynamic field renderer that respects view resolution + role visibility.
 libraries/views/tolerance-bounds.md	F2 tolerance validation product surface — lifted <NumericField> tolerance hint shows in operational + QC modes via one selector. v0.8.12.

@@ -2,7 +2,7 @@
 library: tenant
 package-nuget: Chthonic.Tenant
 package-npm: '@chthonicsystems/tenant'
-version: 0.5.0
+version: 0.8.0
 related-rfcs: [0004]
 related-libs: [identity, payments, audit, locale]
 last-verified: 2026-05-22
@@ -147,6 +147,7 @@ See [RFC 0022 § 12 Amendment 1](https://github.com/chthonicsystems/architecture
 - [`consumption.md`](consumption.md) — full integration.
 - [`extension-points.md`](extension-points.md) — sections, signup handler, entitlements adders.
 - [`entitlements.md`](entitlements.md) — feature flags + tier limits + per-tenant overrides + quotas.
+- [`seeds.md`](seeds.md) — v0.8.0+ seeding policy (RFC 0039: app-policy, not lib-policy).
 - [`config-hub.md`](config-hub.md) — 13 sections + ConfigHubShell.
 - [`appversion.md`](appversion.md) — mobile force-update.
 - [`smartlink.md`](smartlink.md) — universal link redirects.

@@ -1,7 +1,7 @@
 ---
 library: mobile-runtime
 package-npm: '@chthonicsystems/mobile-runtime'
-version: 0.1.0
+version: 0.3.0
 related-rfcs: [0018]
 related-libs: [tenant, notifications, ui]
 last-verified: 2026-05-22
@@ -41,7 +41,8 @@ n/a — `@chthonicsystems/mobile-runtime` is an npm-only library. There is no `C
 | `setupDeepLinks(history)` | Wires `appUrlOpen` → React Router |
 | `checkForceUpdate(apiBaseUrl)` | Calls `/api/app-version/latest`; shows force-update screen if needed |
 | `useBiometric()` | Hook for Face ID / Touch ID auth |
-| `useCamera()`, `useFilePicker()` | Camera + file pickers |
+| `useCamera()`, `useFilePicker()` | Camera + file pickers (v0.1.0+; `useCamera` deprecated v0.3.0+) |
+| `useMediaCapture()` | **v0.3.0+** — unified namespace returning `{ capturePhoto, captureVideo, pickFromLibrary, isVideoSupported }`. See [`media-capture.md`](media-capture.md). |
 | `getResolvedVersion()` | Reads `app_version.json` |
 
 ## Dependencies
@@ -76,7 +77,7 @@ initMobileRuntime({
 ## Related
 
 - [`architecture.md`](architecture.md), [`consumption.md`](consumption.md), [`extension-points.md`](extension-points.md).
-- [`capacitor-bridge.md`](capacitor-bridge.md), [`push-notifications.md`](push-notifications.md), [`deep-links.md`](deep-links.md), [`force-update.md`](force-update.md), [`biometric.md`](biometric.md), [`version-sync.md`](version-sync.md).
+- [`capacitor-bridge.md`](capacitor-bridge.md), [`push-notifications.md`](push-notifications.md), [`deep-links.md`](deep-links.md), [`force-update.md`](force-update.md), [`biometric.md`](biometric.md), [`version-sync.md`](version-sync.md), [`media-capture.md`](media-capture.md).
 - Library repo: [chthonicsystems/mobile-runtime](https://github.com/chthonicsystems/mobile-runtime).
 - Template repo: [chthonicsystems/mobile-shell-template](https://github.com/chthonicsystems/mobile-shell-template).
 - [RFC 0018](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0018-mobile-shell-strategy.md).
