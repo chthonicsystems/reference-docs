@@ -161,5 +161,5 @@ public sealed class TTJobStatusTransitionValidator : IJobStatusTransitionValidat
 ## Refs
 
 - RFC 0022 — Quality Control sign-off & rework round-trip (Accepted 2026-05-23). Full design including the 8-alternative refinement journey in § 10.
-- `@chthonic/views` v0.6.0 — provides `View.Kind` discriminator, `EntityField.MinValue/MaxValue/Unit/ParentFieldId`, `FieldBoundsValidator` utility (consumed by `QcSignoffService.SubmitSignoffAsync`).
+- `@chthonic/views` v0.6.0 — provides `View.Kind` discriminator, `EntityField.MinValue/MaxValue/Unit/ParentFieldId`, `FieldBoundsValidator` utility (consumed by `QcSignoffService.SubmitSignoffAsync`). For the F2 product surface (operational + QC dual-mode tolerance display, lifted `<NumericField>` hint, RFC 0023 architectural divergence record) see [`../views/tolerance-bounds.md`](../views/tolerance-bounds.md).
 - TorqueTech `feat/01-F1-qc-signoff` PR — primary consumer.

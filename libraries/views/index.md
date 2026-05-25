@@ -2,12 +2,12 @@
 library: views
 package-nuget: Chthonic.Views
 package-npm: '@chthonicsystems/views'
-version: 0.6.0
-related-rfcs: [0010, 0022]
+version: 0.8.12
+related-rfcs: [0010, 0022, 0023]
 related-libs: [tenant, audit, catalog]
-last-verified: 2026-05-23
-tags: [cross-cutting, custom-fields, views, screens, qc]
-summary: Custom field definitions + per-role view configurations + ScreenSectionsRenderer + v0.6.0 view-kind discriminator + numeric bounds + parent-child structure for QC.
+last-verified: 2026-05-25
+tags: [cross-cutting, custom-fields, views, screens, qc, tolerance]
+summary: Custom field definitions + per-role view configurations + ScreenSectionsRenderer + v0.6.0 view-kind discriminator + numeric bounds + parent-child structure for QC + v0.8.12 lifted operational-mode tolerance hint.
 ---
 
 # `@chthonicsystems/views` / `Chthonic.Views`
@@ -138,10 +138,24 @@ Top-level views are kind-neutral — any view can render in either kind. Eligibi
 
 See [RFC 0022 § 12 Amendment 1](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0022-qc-signoff.md#12-amendment-1--f1b-qc-view-defaults--opt-out-2026-05-24) for the full design rationale. v0.8.4 through v0.8.11 are UX polish patches landed during the F1c/F1d work tracked in [RFC 0022 § 13 Amendment 2](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0022-qc-signoff.md#13-amendment-2--f1cf1d-state-machine-simplification--reopen-tracking--rework-badge-2026-05-24).
 
+## v0.8.12 — Operational-mode tolerance hint via lifted `<NumericField>` (PR 04 / RFC 0023 Amendment 1)
+
+Lifts the on-screen "Tolerance: min – max unit" hint from `<ScreenSectionsRenderer>`'s QC-mode branch into `<NumericField>` itself. Both operational-mode entry and QC-mode submit display the hint via the same component path. Selector contract: `data-testid="tolerance-hint-${field.systemJobFieldId}"` applies in BOTH modes.
+
+| Change | Impact |
+|---|---|
+| `<NumericField>` renders tolerance hint when `field.minValue` or `field.maxValue` is set | Operational entry now shows the expected range inline (was QC-mode only) |
+| `<ScreenSectionsRenderer>` QC-numeric editable branch removes its own hint render | DRY — one component path |
+| `<ScreenSectionsRenderer>` QC-numeric readonly branch keeps inline render | `<ReadOnlyField>` doesn't carry the hint; preserves QC history view parity |
+| CSS class rename: `.qc-tolerance-hint` → `.numeric-field-tolerance-hint` | Same visual styling; reflects the new dual-mode home |
+
+Additive; API surface unchanged. See [`tolerance-bounds.md`](tolerance-bounds.md) for the F2 product surface end-to-end and [RFC 0023 § 12 Amendment 1](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0023-tolerance-validation.md#12-amendment-1--implementation-diverged-from-original-design-2026-05-26) for the architectural divergence record.
+
 ## Related
 
 - [`architecture.md`](architecture.md), [`consumption.md`](consumption.md), [`extension-points.md`](extension-points.md).
-- [`custom-fields.md`](custom-fields.md), [`entity-field-discriminator.md`](entity-field-discriminator.md), [`entity-field-bounds.md`](entity-field-bounds.md), [`screen-sections-renderer.md`](screen-sections-renderer.md), [`auto-providers.md`](auto-providers.md).
+- [`custom-fields.md`](custom-fields.md), [`entity-field-discriminator.md`](entity-field-discriminator.md), [`entity-field-bounds.md`](entity-field-bounds.md), [`tolerance-bounds.md`](tolerance-bounds.md), [`screen-sections-renderer.md`](screen-sections-renderer.md), [`auto-providers.md`](auto-providers.md).
 - Library repo: [chthonicsystems/views](https://github.com/chthonicsystems/views).
 - [RFC 0010](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0010-views-and-custom-fields.md).
 - [RFC 0022](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0022-qc-signoff.md) — QC sign-off, including § 12 Amendment 1 for v0.8.x changes.
+- [RFC 0023](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0023-tolerance-validation.md) — F2 tolerance validation, including § 12 Amendment 1 for v0.8.12.
