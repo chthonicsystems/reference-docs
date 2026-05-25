@@ -2,12 +2,12 @@
 library: work
 package-nuget: Chthonic.Work
 package-npm: '@chthonicsystems/work'
-version: 0.5.0
-related-rfcs: [0001, 0022, 0025, 0037]
+version: 0.6.0
+related-rfcs: [0001, 0022, 0025, 0027, 0037]
 related-libs: [tenant, parties, assets, views, notes, audit, notifications]
 last-verified: 2026-05-25
-tags: [work-spine, jobs, qc-signoff, labour-clocking]
-summary: Slimmed Job spine — Job + JobMechanic + auto-comments + status validation + v0.2.0 QC sign-off vocabulary + v0.3.0 LabourEntry timeline (clock-in/out per mechanic) + v0.5.0 per-result upsert in QC SaveDraft / SubmitSignoff.
+tags: [work-spine, jobs, qc-signoff, labour-clocking, job-priority]
+summary: Slimmed Job spine — Job + JobMechanic + auto-comments + status validation + v0.2.0 QC sign-off vocabulary + v0.3.0 LabourEntry timeline (clock-in/out per mechanic) + v0.5.0 per-result upsert in QC SaveDraft / SubmitSignoff + v0.6.0 JobPriority enum + Job.Priority column.
 ---
 
 # `@chthonicsystems/work` / `Chthonic.Work`
@@ -37,6 +37,8 @@ A `Job` is the unit of work a tenant performs. Cross-product:
 | `IJobStatusTransitionValidator` | Validates status changes |
 | `IQcSignoffService` (v0.2.0+) | QC sign-off lifecycle (start / submit / rework). See [qc-signoff.md](qc-signoff.md). |
 | `ILabourClockService` (v0.3.0+) | Per-mechanic clock-in / clock-out timeline. Overlap-detect on user; idempotent close. See [labour-clocking.md](labour-clocking.md). |
+| `JobPriority` enum + `Job.Priority` column (v0.6.0+) | Job urgency: Normal/High/Urgent; default Normal. See [priority.md](priority.md). |
+| `AutoCommentGenerator.TrackPriorityChange` / `AddPriorityChangeComment` (v0.6.0+) | Diff + persist split for priority changes. |
 | `LabourClockOverlapException` (v0.3.0+) | Typed exception with `OpenLabourEntryId` + `OpenJobId` for 409 mapping |
 | `MapChthonicWorkEndpoints` | (sister-product ready; TT keeps its own) |
 | `services.AddChthonicWork()` | DI entry point — auto-registers all services above |
@@ -47,7 +49,7 @@ A `Job` is the unit of work a tenant performs. Cross-product:
 
 | Export | Role |
 |---|---|
-| Types | `Job`, `JobStatus`, `JobMechanicAssignment`, `QcSignoff` / `QcSignoffItemResult` / `QcRework` / `QcSignoffStatus` (v0.2.0+), `LabourEntry` (v0.3.0+) |
+| Types | `Job`, `JobStatus`, `JobMechanicAssignment`, `QcSignoff` / `QcSignoffItemResult` / `QcRework` / `QcSignoffStatus` (v0.2.0+), `LabourEntry` (v0.3.0+), `JobPriority` (v0.6.0+) |
 | Future | Job-related hooks + components when consumer-extracted |
 
 ## Schema
