@@ -210,9 +210,10 @@ libraries/views/custom-fields.md	Custom field definitions — types, visibility 
 libraries/views/entity-field-bounds.md	Numeric bounds metadata on EntityField (MinValue/MaxValue/Unit) — dual-purpose save-time / result-time semantics with FieldBoundsValidator.
 libraries/views/entity-field-discriminator.md	entity_type discriminator + (entity_type, entity_id) polymorphic FK on entity_field_value.
 libraries/views/extension-points.md	Extension points — IAutoScreenProvider<T>, IAutoOptionsProvider, IDbContextProvider, http adapter.
-libraries/views/index.md	Custom field definitions + per-role view configurations + ScreenSectionsRenderer + v0.6.0 view-kind discriminator + numeric bounds + parent-child structure for QC.
+libraries/views/index.md	Custom field definitions + per-role view configurations + ScreenSectionsRenderer + v0.6.0 view-kind discriminator + numeric bounds + parent-child structure for QC + v0.8.12 lifted operational-mode tolerance hint.
 libraries/views/qc-resolution.md	4-stop server-side QC view resolution chain + 3-step eligibility tree + ScreenSectionsRenderer kind-aware dispatch.
 libraries/views/screen-sections-renderer.md	<ScreenSectionsRenderer> — dynamic field renderer that respects view resolution + role visibility.
+libraries/views/tolerance-bounds.md	F2 tolerance validation product surface — lifted <NumericField> tolerance hint shows in operational + QC modes via one selector. v0.8.12.
 libraries/work/architecture.md	Work internals — Job spine, mechanic assignment, auto-comment generator, QC vocabulary (v0.2.0+), LabourEntry timeline (v0.3.0+).
 libraries/work/auto-comments.md	AutoCommentGenerator — system-emitted comments on every status transition.
 libraries/work/consumption.md	Code-level integration walkthrough.
