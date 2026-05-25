@@ -1,9 +1,9 @@
 ---
 library: work
 related-rfcs: [0022]
-last-verified: 2026-05-23
+last-verified: 2026-05-25
 tags: [work, qc-signoff, rework, state-machine]
-summary: QC sign-off & rework round-trip — per-attempt audit + auto-derive Passes from FieldBoundsValidator + rework loop integration with JobStatus state machine. v0.2.0+.
+summary: QC sign-off & rework round-trip — per-attempt audit + auto-derive Passes from FieldBoundsValidator + rework loop integration with JobStatus state machine. v0.2.0+. (v0.4.0 — three-status lifecycle. v0.5.0 — per-result upsert in SaveDraft / SubmitSignoff.)
 ---
 
 # QC sign-off & rework round-trip
@@ -111,6 +111,30 @@ If all items pass, the service transitions Job → `JobStatus.QcPassed`.
 ## Idempotent on double-submit
 
 If the QcSignoff is already in a terminal state (`Passed` or `Reworked`), `SubmitSignoffAsync` returns the existing row unchanged. Mobile callers retrying after a flaky network won't double-submit.
+
+## Save and submit semantics (v0.5.0+)
+
+`SaveDraftAsync` and `SubmitSignoffAsync` are **per-result upserts** keyed on `(QcSignoffId, EntityFieldId)`. Existing rows for fields not present in the request payload are **preserved**.
+
+Previously (v0.4.x and earlier), both methods deleted the entire `QcSignoffItemResult` set on the signoff and rewrote it from the payload. This caused data loss when callers sent a partial payload — e.g. TorqueTech's JobDetail Sign Off button collects only inline-screen renderer values via `collectQcPayload`, so submitting a job whose QC view has only non-inline screens (Brake Service auto-synth) sent an empty payload and wiped the supervisor's saved draft.
+
+The v0.5.0 semantics match the operational `JobFieldValue` per-`(Entity, Name)` upsert pattern:
+
+| Existing → New (per result) | Action |
+|---|---|
+| (no row) → fail | INSERT result + INSERT QcRework (when `writeRework=true`) |
+| pass → fail | UPDATE result + INSERT QcRework if none exists |
+| fail → pass | UPDATE result + DELETE existing QcRework |
+| fail → fail | UPDATE notes/value, leave QcRework intact |
+| (no row) → pass | INSERT result only |
+| pass → pass | UPDATE value/notes only |
+| not in payload, currently failing | leave alone, but at submit time backfill QcRework if missing (preserves the "every failure has a rework" invariant) |
+
+`SubmitSignoffAsync.anyFailed` derives from the **post-upsert union** of all results on the signoff — existing untouched rows + payload upserts. A submit with empty payload correctly reflects the existing draft's pass/fail state; a submit with a partial payload reflects union state.
+
+Auto-comment line items count the full post-upsert result set ("`{N} items checked`"), not the payload size, so the comment reflects the supervisor's actual review surface.
+
+API surface unchanged from v0.4.x. Consumers sending full payloads see no behaviour change. Consumers sending partial / empty payloads now correctly preserve the rest of the draft.
 
 ## `IJobStatusTransitionValidator` — the new gate hook
 
