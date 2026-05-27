@@ -2,12 +2,12 @@
 library: work
 package-nuget: Chthonic.Work
 package-npm: '@chthonicsystems/work'
-version: 0.6.0
-related-rfcs: [0001, 0022, 0025, 0027, 0037]
+version: 0.7.0
+related-rfcs: [0001, 0022, 0025, 0027, 0028, 0036, 0037]
 related-libs: [tenant, parties, assets, views, notes, audit, notifications]
-last-verified: 2026-05-25
-tags: [work-spine, jobs, qc-signoff, labour-clocking, job-priority]
-summary: Slimmed Job spine — Job + JobMechanic + auto-comments + status validation + v0.2.0 QC sign-off vocabulary + v0.3.0 LabourEntry timeline (clock-in/out per mechanic) + v0.5.0 per-result upsert in QC SaveDraft / SubmitSignoff + v0.6.0 JobPriority enum + Job.Priority column.
+last-verified: 2026-05-27
+tags: [work-spine, jobs, qc-signoff, labour-clocking, job-priority, comeback-linkage]
+summary: Slimmed Job spine — Job + JobMechanic + auto-comments + status validation + v0.2.0 QC sign-off vocabulary + v0.3.0 LabourEntry timeline (clock-in/out per mechanic) + v0.5.0 per-result upsert in QC SaveDraft / SubmitSignoff + v0.6.0 JobPriority enum + Job.Priority column + v0.7.0 ComebackReason enum + Job.ParentJobId self-FK + Job.ComebackReason for F7/F15 foundation.
 ---
 
 # `@chthonicsystems/work` / `Chthonic.Work`
@@ -39,6 +39,8 @@ A `Job` is the unit of work a tenant performs. Cross-product:
 | `ILabourClockService` (v0.3.0+) | Per-mechanic clock-in / clock-out timeline. Overlap-detect on user; idempotent close. See [labour-clocking.md](labour-clocking.md). |
 | `JobPriority` enum + `Job.Priority` column (v0.6.0+) | Job urgency: Normal/High/Urgent; default Normal. See [priority.md](priority.md). |
 | `AutoCommentGenerator.TrackPriorityChange` / `AddPriorityChangeComment` (v0.6.0+) | Diff + persist split for priority changes. |
+| `ComebackReason` enum + `Job.ParentJobId` self-FK + `Job.ComebackReason` (v0.7.0+) | Comeback / warranty linkage: Warranty / Goodwill / InsuranceClaim / Other. Foundation for F15 (RFC 0036). See [comeback-linkage.md](comeback-linkage.md). |
+| `AutoCommentGenerator.TrackComebackLink` / `AddComebackLinkComment` (v0.7.0+) | Diff + persist split for comeback link changes (5 mutation shapes). |
 | `LabourClockOverlapException` (v0.3.0+) | Typed exception with `OpenLabourEntryId` + `OpenJobId` for 409 mapping |
 | `MapChthonicWorkEndpoints` | (sister-product ready; TT keeps its own) |
 | `services.AddChthonicWork()` | DI entry point — auto-registers all services above |
@@ -49,7 +51,7 @@ A `Job` is the unit of work a tenant performs. Cross-product:
 
 | Export | Role |
 |---|---|
-| Types | `Job`, `JobStatus`, `JobMechanicAssignment`, `QcSignoff` / `QcSignoffItemResult` / `QcRework` / `QcSignoffStatus` (v0.2.0+), `LabourEntry` (v0.3.0+), `JobPriority` (v0.6.0+) |
+| Types | `Job`, `JobStatus`, `JobMechanicAssignment`, `QcSignoff` / `QcSignoffItemResult` / `QcRework` / `QcSignoffStatus` (v0.2.0+), `LabourEntry` (v0.3.0+), `JobPriority` (v0.6.0+), `ComebackReason` (v0.7.0+) |
 | Future | Job-related hooks + components when consumer-extracted |
 
 ## Schema

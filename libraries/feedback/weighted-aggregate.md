@@ -53,3 +53,19 @@ public class CustomAggregator : IRatingAggregator
 ## Related
 
 - [`internal-reviews.md`](internal-reviews.md), [`google-reviews.md`](google-reviews.md).
+
+> **Note for the F15 implementer (RFC 0036 — comeback-rate report).**
+> The comeback-rate metric is a different kind of weighted aggregate
+> from the review-rating one above — but the principle (weighted union
+> of two distinct signal sources) is similar. F15 unions:
+>
+> 1. **`Job.ParentJobId`** — explicit user-asserted comeback link
+>    captured at job creation or via the comeback PATCH endpoint.
+>    Lives in `@chthonic/work` v0.7.0+; see
+>    [`libraries/work/comeback-linkage.md`](../work/comeback-linkage.md).
+> 2. **`JobReopen` audit rows** — admin reopened a Closed job back to
+>    InProgress. TT-side entity introduced in PR 19 / RFC 0022 § 13.
+>
+> Don't compute the metric from a single source — the rework rate will
+> be biased. The dual-signal contract is documented in detail in
+> [`libraries/work/comeback-linkage.md` § Relationship to JobReopen](../work/comeback-linkage.md#relationship-to-jobreopen).

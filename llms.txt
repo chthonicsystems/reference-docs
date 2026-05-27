@@ -220,10 +220,11 @@ libraries/views/screen-sections-renderer.md	<ScreenSectionsRenderer> — dynamic
 libraries/views/tolerance-bounds.md	F2 tolerance validation product surface — lifted <NumericField> tolerance hint shows in operational + QC modes via one selector. v0.8.12.
 libraries/work/architecture.md	Work internals — Job spine, mechanic assignment, auto-comment generator, QC vocabulary (v0.2.0+), LabourEntry timeline (v0.3.0+).
 libraries/work/auto-comments.md	AutoCommentGenerator — system-emitted comments on every status transition.
+libraries/work/comeback-linkage.md	v0.7.0 — Job.ParentJobId self-FK + Job.ComebackReason enum for comeback / warranty linkage. Foundation for F15 comeback-rate report (RFC 0036).
 libraries/work/consumption.md	Code-level integration walkthrough.
 libraries/work/cross-library-asset-fk.md	Job.Asset typed as polymorphic Asset base — consumer downcasts at the call site.
 libraries/work/extension-points.md	Extension points — IJobStatusTransitionValidator, IJobStatusChangedHandler (auto-clock-out), IAutoCommentGenerator, IJobNumberGenerator, IOpenEntryWatchdog (forgotten-clock-out).
-libraries/work/index.md	Slimmed Job spine — Job + JobMechanic + auto-comments + status validation + v0.2.0 QC sign-off vocabulary + v0.3.0 LabourEntry timeline (clock-in/out per mechanic) + v0.5.0 per-result upsert in QC SaveDraft / SubmitSignoff + v0.6.0 JobPriority enum + Job.Priority column.
+libraries/work/index.md	Slimmed Job spine — Job + JobMechanic + auto-comments + status validation + v0.2.0 QC sign-off vocabulary + v0.3.0 LabourEntry timeline (clock-in/out per mechanic) + v0.5.0 per-result upsert in QC SaveDraft / SubmitSignoff + v0.6.0 JobPriority enum + Job.Priority column + v0.7.0 ComebackReason enum + Job.ParentJobId self-FK + Job.ComebackReason for F7/F15 foundation.
 libraries/work/job-spine.md	Job spine — what the slimmed v0.1.0 owns vs split-off concerns.
 libraries/work/labour-clocking.md	LabourEntry timeline + ILabourClockService — per-mechanic clock-in / clock-out per job. Audit auto-rollup to Job via [AuditParent].
 libraries/work/priority.md	v0.6.0 — Job urgency / priority enum (Normal/High/Urgent) on the Job entity.
