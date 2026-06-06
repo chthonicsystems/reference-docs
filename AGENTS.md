@@ -55,7 +55,7 @@ Plus the 25 library repos under `chthonicsystems/<lib>` (one per library), and 3
 
 `llms.txt` at the repo root is a flat manifest of every page with a one-line summary. Useful when an agent doesn't yet know which library is responsible for a concern.
 
-## 25-library inventory
+## 26-library inventory
 
 | # | Library | Purpose | Reference |
 |---|---|---|---|
@@ -84,6 +84,7 @@ Plus the 25 library repos under `chthonicsystems/<lib>` (one per library), and 3
 | 23 | `@chthonic/ui` | Foundational design system — MD3 + app-* + 5 page patterns + brand tokens | [libraries/ui](libraries/ui/) |
 | 24 | `@chthonicsystems/mobile-runtime` | Capacitor runtime — push, deep-link, force-update, biometric, camera/file, version sync | [libraries/mobile-runtime](libraries/mobile-runtime/) |
 | 25 | `@chthonicsystems/devops-scripts` | DevOps CLI: dev-start, setup-server, setup-ssl, setup-github-envs, db-backup, pre-deploy-check | [libraries/devops-scripts](libraries/devops-scripts/) |
+| 26 | `@chthonicsystems/scheduling` | Vertical-agnostic staff-initiated resource scheduling — Resource + ScheduleSlot + IDispatchBoardService + 3 hooks. Distinct from `@chthonic/booking` (customer-initiated). NEW v0.1.0 in PR 08. | [libraries/scheduling](libraries/scheduling/) |
 
 ## Per-library page contract
 
@@ -125,7 +126,7 @@ Companion pages within `libraries/<lib>/`:
 
 | Page | Owns |
 |---|---|
-| [`platform/overview.md`](platform/overview.md) | 25-library map, tier mental model, dependency DAG |
+| [`platform/overview.md`](platform/overview.md) | 26-library map, tier mental model, dependency DAG |
 | [`platform/library-consumption.md`](platform/library-consumption.md) | NuGet `nuget.config` + npm `.npmrc` + `GITHUB_PACKAGES_PAT` setup |
 | [`platform/version-policy.md`](platform/version-policy.md) | SemVer + Conventional Commits + release-please + breaking-change protocol |
 | [`platform/extension-patterns.md`](platform/extension-patterns.md) | Polymorphic FK, two-package shape, generic entitlements, Option C UI shells, migration coexistence, cross-library FK-only typing |
