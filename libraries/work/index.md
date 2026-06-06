@@ -2,12 +2,12 @@
 library: work
 package-nuget: Chthonic.Work
 package-npm: '@chthonicsystems/work'
-version: 0.7.0
+version: 0.8.0
 related-rfcs: [0001, 0022, 0025, 0027, 0028, 0036, 0037]
 related-libs: [tenant, parties, assets, views, notes, audit, notifications]
 last-verified: 2026-05-27
 tags: [work-spine, jobs, qc-signoff, labour-clocking, job-priority, comeback-linkage]
-summary: Slimmed Job spine — Job + JobMechanic + auto-comments + status validation + v0.2.0 QC sign-off vocabulary + v0.3.0 LabourEntry timeline (clock-in/out per mechanic) + v0.5.0 per-result upsert in QC SaveDraft / SubmitSignoff + v0.6.0 JobPriority enum + Job.Priority column + v0.7.0 ComebackReason enum + Job.ParentJobId self-FK + Job.ComebackReason for F7/F15 foundation.
+summary: Slimmed Job spine — Job + JobMechanic + auto-comments + status validation + v0.2.0 QC sign-off vocabulary + v0.3.0 LabourEntry timeline (clock-in/out per mechanic) + v0.5.0 per-result upsert in QC SaveDraft / SubmitSignoff + v0.6.0 JobPriority enum + Job.Priority column + v0.7.0 ComebackReason enum + Job.ParentJobId self-FK + Job.ComebackReason for F7/F15 foundation + **v0.8.0 BREAKING — drops Job.ScheduledDate (replaced by ScheduleSlot from `@chthonic/scheduling` per RFC 0029)**.
 ---
 
 # `@chthonicsystems/work` / `Chthonic.Work`
@@ -71,7 +71,6 @@ job
   currency        char(3)
   meter_reading   int?
   due_date        date?
-  scheduled_date  datetime?
   created_at      datetime
   deleted_at      datetime?
 

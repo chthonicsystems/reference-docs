@@ -112,5 +112,6 @@ setBookingUseAuth(useAuth);
 
 - [`architecture.md`](architecture.md), [`consumption.md`](consumption.md), [`extension-points.md`](extension-points.md).
 - [`availability-service.md`](availability-service.md), [`time-slots.md`](time-slots.md), [`extension-hooks.md`](extension-hooks.md), [`frontend-hooks.md`](frontend-hooks.md).
+- **Staff-side counterpart:** [`@chthonic/scheduling`](../scheduling/) — vertical-agnostic staff-initiated resource scheduling for the dispatch-board UX. Booking owns customer-initiated scheduling; scheduling owns staff-initiated. Distinct concerns. Per [RFC 0029](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0029-dispatch-board.md).
 - Library repo: [chthonicsystems/booking](https://github.com/chthonicsystems/booking).
 - [RFC 0001](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0001-platform-extraction.md).
