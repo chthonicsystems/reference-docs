@@ -55,7 +55,7 @@ Plus the 25 library repos under `chthonicsystems/<lib>` (one per library), and 3
 
 `llms.txt` at the repo root is a flat manifest of every page with a one-line summary. Useful when an agent doesn't yet know which library is responsible for a concern.
 
-## 26-library inventory
+## 27-library inventory
 
 | # | Library | Purpose | Reference |
 |---|---|---|---|
@@ -85,6 +85,7 @@ Plus the 25 library repos under `chthonicsystems/<lib>` (one per library), and 3
 | 24 | `@chthonicsystems/mobile-runtime` | Capacitor runtime — push, deep-link, force-update, biometric, camera/file, version sync | [libraries/mobile-runtime](libraries/mobile-runtime/) |
 | 25 | `@chthonicsystems/devops-scripts` | DevOps CLI: dev-start, setup-server, setup-ssl, setup-github-envs, db-backup, pre-deploy-check | [libraries/devops-scripts](libraries/devops-scripts/) |
 | 26 | `@chthonicsystems/scheduling` | Vertical-agnostic staff-initiated resource scheduling — Resource + ScheduleSlot + IDispatchBoardService + 3 hooks. Distinct from `@chthonic/booking` (customer-initiated). NEW v0.1.0 in PR 08. | [libraries/scheduling](libraries/scheduling/) |
+| 27 | `@chthonicsystems/inventory` | Stock-on-hand tracking — InventoryLevel + StockMovement append-only ledger + IStockService + 2 hooks. Alongside `@chthonic/catalog` (what we sell). NEW v0.1.0 in PR 09. | [libraries/inventory](libraries/inventory/) |
 
 ## Per-library page contract
 

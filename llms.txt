@@ -44,7 +44,7 @@ libraries/billing/consumption.md	Code-level integration walkthrough.
 libraries/billing/estimate-invoice-flow.md	Estimate → Invoice → Paid lifecycle.
 libraries/billing/extension-points.md	Add accounting provider — IAccountingProvider impl + sister NuGet package.
 libraries/billing/index.md	Estimates + invoices + Xero + QuickBooks + token encryption + inventory sync.
-libraries/billing/inventory-sync.md	PeriodicInventorySyncService — pull product list from accounting providers + diff against catalog.
+libraries/billing/inventory-sync.md	Two accounting-inventory flows — the unchanged pull-import (PullProductsAsync every 6h) and the new v0.2.0 push path (IAccountingProvider.PushInventoryAdjustmentAsync) that feeds @chthonic/inventory stock movements to Xero/QuickBooks.
 libraries/billing/quickbooks-integration.md	QuickBooks accounting provider — OAuth2, realmId, push-customer + push-invoice.
 libraries/billing/token-encryption.md	ITokenEncryptionService — at-rest encryption of OAuth tokens for accounting connections.
 libraries/billing/xero-integration.md	Xero accounting provider — OAuth2 flow, organisation selection, push-customer + push-invoice.
@@ -59,9 +59,10 @@ libraries/booking/time-slots.md	ServiceTimeSlot + ServiceOffDay — per-service 
 libraries/catalog/architecture.md	Catalog internal structure — 4 entities, services, EF migration.
 libraries/catalog/consumption.md	Code-level integration walkthrough.
 libraries/catalog/extension-points.md	Extension points — IDbContextProvider, permission overrides, optional time-slot library.
-libraries/catalog/index.md	Service & Product catalog spine — vertical-agnostic "what does this tenant sell".
+libraries/catalog/index.md	Service & Product catalog spine — vertical-agnostic "what does this tenant sell". v0.2.x adds ServicePackage bundles (job templates / repair packages).
 libraries/catalog/productvariant-pricing.md	ProductVariant — line items under a Product with SKU + barcode + price.
 libraries/catalog/service-and-product.md	Service and Product entities — top-level catalog units.
+libraries/catalog/service-packages.md	ServicePackage deep-ref (v0.2.0 / RFC 0034) — named bundle of ServiceItem XOR ProductVariant rows; IServicePackageService CRUD; endpoints mounted by consumers under their own feature gate via a separate mapper; apply-path stays consumer-side (TT's POST /api/jobs/{id}/apply-package routes through JobFieldService so F9 stock decrement wraps it); provenance stays consumer-side.
 libraries/catalog/serviceitem-fields.md	ServiceItem — line items under a Service. Cost lives here, not on Service.
 libraries/data/architecture.md	Data internals — SQLite builder, RabbitMQ consumer, S3 storage.
 libraries/data/consumption.md	Code-level integration walkthrough.
@@ -113,6 +114,12 @@ libraries/identity/customer-auth.md	Mobile-based customer auth — SMS OTP verif
 libraries/identity/extension-points.md	Five port adapters consumers register before AddChthonicIdentity.
 libraries/identity/index.md	Authentication (JWT + OAuth) + users + customer auth + RBAC + sessions + API keys.
 libraries/identity/rbac.md	9 default roles + page/action permission types + DatabaseSeeder pattern.
+libraries/inventory/architecture.md	How InventoryLevel × StockMovement relate; how RecordMovementAsync applies a signed delta under optimistic concurrency; how StockMovementBroadcaster fans committed movements to IStockMovementSink subscribers. No triggers.
+libraries/inventory/consumption.md	How to consume @chthonic/inventory — DI + IDbContextProvider bridge, two IStockMovementSink impls, RequireFeature('JobsInventory') route group, delta-based decrement in the job line-item save path, and the 14-day observe-only accounting-push window behind Inventory:AccountingPushEnabled. TorqueTech worked example throughout.
+libraries/inventory/extension-points.md	The extension surfaces shipped in v0.1.0 — IDbContextProvider (consumer-required) + IStockMovementSink (0..n post-commit observer) + IStockAlertPolicy (replaceable low-stock threshold). IStockLocationProvider deferred with multi-warehouse.
+libraries/inventory/index.md	Stock-on-hand tracking — InventoryLevel + StockMovement append-only ledger + IStockService + 2 extension hooks. Answers "how much do we have" alongside `@chthonic/catalog`'s "what do we sell".
+libraries/inventory/stock-movements.md	StockMovement deep-ref — append-only signed-quantity ledger; StockMovementType 5 values stored VARCHAR(20) via HasConversion; JobId FK-only; system+variant+occurred index; GetMovementsSinceAsync powers the accounting push feed.
+libraries/inventory/stock-on-hand.md	InventoryLevel deep-ref — one row per (system, variant); OnHand materialised from the ledger; Reserved always 0 in v0.1.0; nullable ReorderPoint; RowVersion optimistic token (retry ×3, no triggers); negative-stock allowNegative + InsufficientStockException → 409.
 libraries/listings/ai-generation.md	AI-generated listing themes — prompt-centric session, artifact-keyed carousel, manual edit.
 libraries/listings/architecture.md	Listings internals — registry, slug generation, AI artifacts, public + admin endpoints.
 libraries/listings/consumption.md	Code-level integration walkthrough.
@@ -174,6 +181,13 @@ libraries/payments/money-type.md	Money value type — currency + minor-unit amou
 libraries/payments/provider-abstraction.md	IPaymentProvider interface + how to implement a new provider.
 libraries/payments/stripe-integration.md	Stripe-specific implementation — StripePaymentProvider, webhook endpoint, env var setup.
 libraries/payments/webhook-idempotency.md	Webhook idempotency — duplicate-event detection via DB unique-key insert.
+libraries/scheduling/architecture.md	How Resource × ScheduleSlot × Job/Booking relate; where the MySQL trigger sits as the authoritative conflict gate; how the three extension hooks compose.
+libraries/scheduling/consumption.md	How to consume @chthonic/scheduling — DI registration, IDbContextProvider bridge, route-group tier gate, custom IScheduleSlotEventBus impl, frontend page composition. TorqueTech worked example throughout.
+libraries/scheduling/dispatch-board.md	Dispatch-board UX contract — composable React subcomponents over @dnd-kit/core. Render-prop pattern for per-product preview content. Schedule-X audit (premium licensing) drove the dnd-kit choice.
+libraries/scheduling/extension-points.md	The three extension hooks shipped in v0.1.0 — IResourceTypeProvider (taxonomy), IScheduleSlotEventBus (pub/sub), IDispatchBoardPolicyProvider (overlap policy). Plus the consumer-required IDbContextProvider.
+libraries/scheduling/index.md	Vertical-agnostic staff-initiated resource scheduling — Resource + ScheduleSlot + IDispatchBoardService + 3 extension hooks. Distinct from `@chthonic/booking` (customer-initiated).
+libraries/scheduling/resources.md	Resource entity deep-ref — vertical-agnostic schedulable resource with string ResourceType discriminator. Seeded Bay|Lift|Ramp; tenants self-extend via Config Hub.
+libraries/scheduling/schedule-slots.md	ScheduleSlot deep-ref — DB-level non-overlap enforcement via MySQL trigger; force-override via session variable + permission; status state machine; cross-library FK-only typing on JobId/BookingId.
 libraries/support/architecture.md	Support internals — ticket entity, CTI routing, two-package shape (interface + GitHub impl).
 libraries/support/consumption.md	Code-level integration walkthrough.
 libraries/support/cti-routing.md	Category/Type/Item routing — match incoming tickets to resolver groups + external issue trackers.
@@ -224,7 +238,7 @@ libraries/work/comeback-linkage.md	v0.7.0 — Job.ParentJobId self-FK + Job.Come
 libraries/work/consumption.md	Code-level integration walkthrough.
 libraries/work/cross-library-asset-fk.md	Job.Asset typed as polymorphic Asset base — consumer downcasts at the call site.
 libraries/work/extension-points.md	Extension points — IJobStatusTransitionValidator, IJobStatusChangedHandler (auto-clock-out), IAutoCommentGenerator, IJobNumberGenerator, IOpenEntryWatchdog (forgotten-clock-out).
-libraries/work/index.md	Slimmed Job spine — Job + JobMechanic + auto-comments + status validation + v0.2.0 QC sign-off vocabulary + v0.3.0 LabourEntry timeline (clock-in/out per mechanic) + v0.5.0 per-result upsert in QC SaveDraft / SubmitSignoff + v0.6.0 JobPriority enum + Job.Priority column + v0.7.0 ComebackReason enum + Job.ParentJobId self-FK + Job.ComebackReason for F7/F15 foundation.
+libraries/work/index.md	Slimmed Job spine — Job + JobMechanic + auto-comments + status validation + v0.2.0 QC sign-off vocabulary + v0.3.0 LabourEntry timeline (clock-in/out per mechanic) + v0.5.0 per-result upsert in QC SaveDraft / SubmitSignoff + v0.6.0 JobPriority enum + Job.Priority column + v0.7.0 ComebackReason enum + Job.ParentJobId self-FK + Job.ComebackReason for F7/F15 foundation + **v0.8.0 BREAKING — drops Job.ScheduledDate (replaced by ScheduleSlot from `@chthonic/scheduling` per RFC 0029)**.
 libraries/work/job-spine.md	Job spine — what the slimmed v0.1.0 owns vs split-off concerns.
 libraries/work/labour-clocking.md	LabourEntry timeline + ILabourClockService — per-mechanic clock-in / clock-out per job. Audit auto-rollup to Job via [AuditParent].
 libraries/work/priority.md	v0.6.0 — Job urgency / priority enum (Normal/High/Urgent) on the Job entity.

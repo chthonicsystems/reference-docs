@@ -44,7 +44,7 @@ Per [RFC 0029](../../../architecture/rfcs/0029-dispatch-board.md) (with [§ 12 A
 | `ServiceCollectionExtensions.AddChthonicScheduling` | DI registration entry point. |
 | `ServiceCollectionExtensions.MapChthonicSchedulingEndpoints` | Mounts CRUD endpoints under `/api/scheduling/{resources,schedule-slots}`. |
 
-### TypeScript
+### npm
 
 | Symbol | Role |
 |---|---|
@@ -66,7 +66,46 @@ v0.1.0:
 - New MySQL triggers `schedule_slot_no_overlap_insert` + `schedule_slot_no_overlap_update` enforcing non-overlap on `(resource_id, [start_at, end_at))` excluding Cancelled rows.
 - Force-override via session variable `@sx_bypass_overlap_check = 1`.
 
-## Cross-references
+## Dependencies
+
+| Dep | Purpose |
+|---|---|
+| `@chthonic/tenant` | `SystemId` tenant scoping (FK-only). |
+| `@chthonic/audit` | Audit on resource/slot mutations. |
+| `@chthonic/work` | `ScheduleSlot.JobId` **FK-only typing** — no nav, no compile-time dependency. |
+| `@chthonic/booking` | `ScheduleSlot.BookingId` **FK-only typing** — no nav, no compile-time dependency. |
+| `@dnd-kit/core` + `@dnd-kit/utilities` | Frontend drag-drop primitive for the dispatch board. |
+
+The lib never `PackageReference`s `@chthonic/work` or `@chthonic/booking`; both cross-library links are `int?` columns with no navigation property (see the [cross-library FK-only pattern](../../platform/extension-patterns.md)).
+
+## Extension points
+
+| Hook | Cardinality | Default | Use |
+|---|---|---|---|
+| `IDbContextProvider` | required, single | none | Bridge to the consumer's `DbContext`. |
+| `IResourceTypeProvider` | single (replaceable) | `DefaultResourceTypeProvider` (`Bay \| Lift \| Ramp`) | Per-product resource taxonomy. |
+| `IScheduleSlotEventBus` | single (replaceable) | `NoOpScheduleSlotEventBus` | Slot-lifecycle pub/sub (TT replaces with mobile-push impl). |
+| `IDispatchBoardPolicyProvider` | single (replaceable) | `HardRejectOverlapPolicy` | Per-resource-type overlap policy. |
+
+Full signatures + example impls in [extension-points.md](extension-points.md).
+
+## Consuming this library
+
+```csharp
+builder.Services.AddChthonicScheduling();
+builder.Services.AddScoped<Chthonic.Scheduling.Extensions.IDbContextProvider, MySchedulingDbContextProvider>();
+app.MapChthonicSchedulingEndpoints();   // or wrap in a RequireFeature tier gate
+```
+
+```tsx
+import { setSchedulingHttp, DispatchBoardLayout } from '@chthonicsystems/scheduling';
+setSchedulingHttp(httpAdapter);
+<DispatchBoardLayout systemId={systemId} from={fromIso} to={toIso} /* … */ />
+```
+
+Full walkthrough (DI, `IDbContextProvider` bridge, migration choreography, frontend composition) in [consumption.md](consumption.md).
+
+## Related
 
 - [Architecture diagram](architecture.md)
 - [Consumption pattern (TT worked example)](consumption.md)
