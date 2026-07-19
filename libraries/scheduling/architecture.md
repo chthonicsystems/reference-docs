@@ -42,7 +42,7 @@ erDiagram
 **Key constraints:**
 - One Resource per `(system_id, name)` (unique index).
 - A ScheduleSlot is either Job-pinned XOR Booking-pinned in v0.1.0 (no enforcement; convention).
-- Cross-library FK on `JobId` and `BookingId` is **FK-only typing** — no nav property; the lib never compile-time depends on `@chthonic/work` or `@chthonic/booking`. Per [RFC 0008 amendment](../../../architecture/rfcs/0008-cross-library-fk.md) + RFC 0029 § 4.
+- Cross-library FK on `JobId` and `BookingId` is **FK-only typing** — no nav property; the lib never compile-time depends on `@chthonic/work` or `@chthonic/booking`. Per the [platform cross-library FK-only pattern](../../platform/extension-patterns.md) + RFC 0029 § 4.
 
 ## Conflict-detection flow
 

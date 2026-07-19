@@ -70,6 +70,19 @@ LIMIT 1000;
 | `Listing` | `@chthonic/listings` | All |
 | `Document` | `@chthonic/documents` | All |
 
+> **PR 11 (F10 Vehicle intake walkaround) consumer note.** RFC 0031's
+> original draft proposed a new primary `entity_type='VehicleWalkaround'`.
+> That was **superseded** by the files v0.2.0 two-level FK (shipped
+> 2026-05-26): walkaround photos keep the **primary** FK on `Job`
+> (`entity_type='Job'`, `entity_id=jobId`) and use
+> `sub_entity_type='Walkaround'`, `sub_entity_id=walkaroundId` for the
+> per-walkaround child concept (RFC 0031 § 12a). This keeps the Job
+> Photos page query trivial while surfacing walkaround shots there with
+> a "Walkaround" badge — the same pattern as F3 QC evidence. So
+> `'VehicleWalkaround'` is **not** a registered primary `entity_type`;
+> the recognised TT-side walkaround convention is the `'Walkaround'`
+> **sub-entity** string. See [`sub-entity-fk.md`](sub-entity-fk.md).
+
 ## Cross-product compatibility
 
 Files can attach to any string. No upgrade is needed when a new product introduces a new asset type — just call `UploadAsync(... entityType: "Forklift", ...)` and the index handles it.

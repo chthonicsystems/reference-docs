@@ -31,7 +31,7 @@ A staff-initiated assignment of a Job (or Booking) to a Resource for a specific 
 
 ## Cross-library FK-only typing
 
-Per [RFC 0008 amendment](../../../architecture/rfcs/0008-cross-library-fk.md): `JobId` and `BookingId` are `int?` columns with **no nav property**. The lib never compile-time depends on `@chthonic/work` or `@chthonic/booking`. Consumer apps that want a nav can opt in via extension classes in their own assembly.
+Per the [platform cross-library FK-only pattern](../../platform/extension-patterns.md): `JobId` and `BookingId` are `int?` columns with **no nav property**. The lib never compile-time depends on `@chthonic/work` or `@chthonic/booking`. Consumer apps that want a nav can opt in via extension classes in their own assembly.
 
 ## Status state machine
 
