@@ -160,12 +160,12 @@ libraries/notes/unread-tracking.md	Unread tracking — deferred to v0.2.0+. Sche
 libraries/notifications/architecture.md	Notifications internals — publisher, channels, templates, reminders, sub-daily watchdog, comms.
 libraries/notifications/communications-panel.md	<CommunicationsInbox> — in-app notification inbox component.
 libraries/notifications/consumption.md	Code-level integration walkthrough.
-libraries/notifications/extension-points.md	Extension points — new channel, custom templates, custom reminder milestones, open-entry watchdogs.
-libraries/notifications/index.md	Multi-channel publisher (push/email/SMS/in-app) + Liquid templates + daily reminders + sub-daily open-entry watchdog primitive + comms.
+libraries/notifications/extension-points.md	Extension points — new channel, custom templates, custom reminder milestones, open-entry watchdogs, asset service-interval provider.
+libraries/notifications/index.md	Multi-channel publisher (push/email/SMS/in-app) + Liquid templates + daily reminders + sub-daily open-entry watchdog primitive + asset service-due reminders + comms.
 libraries/notifications/liquid-templates.md	Email/SMS template rendering — Liquid + locale filters preloaded.
 libraries/notifications/multi-channel-publisher.md	INotificationPublisher — single send API across email/SMS/push/in-app.
 libraries/notifications/open-entry-watchdog.md	Sub-daily background-scan primitive for forgotten-open-entry style notifications. Sibling of the daily ReminderScheduler.
-libraries/notifications/reminders.md	ReminderScheduler — daily 02:00 UTC; idempotent via composite index.
+libraries/notifications/reminders.md	ReminderScheduler — daily 02:00 UTC; idempotent via composite index; AssetServiceDue milestone (v0.3.0+).
 libraries/parties/addresses.md	Customer address fields + country normalisation + downstream consumers.
 libraries/parties/architecture.md	Customer + CustomerAsset entities, schema, services.
 libraries/parties/consumption.md	Code-level integration walkthrough for @chthonic/parties.
