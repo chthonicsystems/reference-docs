@@ -1,9 +1,9 @@
 ---
 library: work
-related-rfcs: [0022]
-last-verified: 2026-05-25
+related-rfcs: [0022, 0035]
+last-verified: 2026-07-21
 tags: [work, qc-signoff, rework, state-machine]
-summary: QC sign-off & rework round-trip — per-attempt audit + auto-derive Passes from FieldBoundsValidator + rework loop integration with JobStatus state machine. v0.2.0+. (v0.4.0 — three-status lifecycle. v0.5.0 — per-result upsert in SaveDraft / SubmitSignoff.)
+summary: QC sign-off & rework round-trip — per-attempt audit + auto-derive Passes from FieldBoundsValidator + rework loop integration with JobStatus state machine. v0.2.0+. (v0.4.0 — three-status lifecycle. v0.5.0 — per-result upsert in SaveDraft / SubmitSignoff.) Data source for TorqueTech's first-time-pass QC report (F14, RFC 0035).
 ---
 
 # QC sign-off & rework round-trip
@@ -158,9 +158,18 @@ public sealed class TTJobStatusTransitionValidator : IJobStatusTransitionValidat
 }
 ```
 
+## Downstream: TorqueTech first-time-pass QC report (RFC 0035)
+
+`QcSignoff` is the **data source** for TorqueTech's F14 first-time-pass QC rate report (a TT-only, Premium-gated read-only report — no change to `@chthonic/work`). The report aggregates `QcSignoff` rows into a monthly first-time-pass rate.
+
+**First-time-pass is measured per JOB** (not per signoff): a job is first-time-pass if it has a `Passed` `QcSignoff` **and zero `Reworked` attempts** in its history. Because a Job can have **multiple QcSignoff rows** (one per rework-loop attempt — see [Entities](#entities)), the presence of any `Reworked` attempt disqualifies the job even if a later attempt `Passed`. The denominator is jobs that reached a terminal QC state (`Passed` or `Reworked`) in the period.
+
+> This refines RFC 0035 § 2's original per-signoff phrasing ("a `Passed` signoff with zero linked `QcRework` rows") — a `Passed` attempt inherently has no `QcRework`, so the per-job history is what captures first-time-ness. See RFC 0035 § 12 Amendment 1.
+
 ## Refs
 
 - RFC 0022 — Quality Control sign-off & rework round-trip (Accepted 2026-05-23). Full design including the 8-alternative refinement journey in § 10.
+- RFC 0035 § 12 Amendment 1 — F14 First-time-pass QC rate report (Accepted 2026-07-20). Consumes `QcSignoff` per-job history for the first-time-pass rate; TT-only, Premium-gated. TorqueTech `feat/14-F14-first-time-pass-report` PR #321.
 - RFC 0024 § 12 Amendment 1 — F3 Photo + Video QC Evidence (PR 05). The work lib stays evidence-agnostic: `QcItemResult.FileIds` plumbing slot is consumed by TT-side `QcSignoffOrchestrator.BindFilesToResultsAsync`, which tags file rows via `@chthonicsystems/files` v0.2.0's two-level polymorphic FK (`sub_entity_type='QcSignoffItem'`). For the full TT consumer pattern see [`../files/qc-evidence.md`](../files/qc-evidence.md).
 - `@chthonic/views` v0.6.0 — provides `View.Kind` discriminator, `EntityField.MinValue/MaxValue/Unit/ParentFieldId`, `FieldBoundsValidator` utility (consumed by `QcSignoffService.SubmitSignoffAsync`). For the F2 product surface (operational + QC dual-mode tolerance display, lifted `<NumericField>` hint, RFC 0023 architectural divergence record) see [`../views/tolerance-bounds.md`](../views/tolerance-bounds.md).
 - `@chthonic/views` v0.8.13 — `renderQcAttachmentSlot` prop on `<ScreenSectionsRenderer>`; PR 05 wiring point for evidence slots. See [`../views/screen-sections-renderer.md`](../views/screen-sections-renderer.md).
