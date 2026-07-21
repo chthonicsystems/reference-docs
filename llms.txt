@@ -234,7 +234,7 @@ libraries/views/screen-sections-renderer.md	<ScreenSectionsRenderer> — dynamic
 libraries/views/tolerance-bounds.md	F2 tolerance validation product surface — lifted <NumericField> tolerance hint shows in operational + QC modes via one selector. v0.8.12.
 libraries/work/architecture.md	Work internals — Job spine, mechanic assignment, auto-comment generator, QC vocabulary (v0.2.0+), LabourEntry timeline (v0.3.0+).
 libraries/work/auto-comments.md	AutoCommentGenerator — system-emitted comments on every status transition.
-libraries/work/comeback-linkage.md	v0.7.0 — Job.ParentJobId self-FK + Job.ComebackReason enum for comeback / warranty linkage. Foundation for F15 comeback-rate report (RFC 0036).
+libraries/work/comeback-linkage.md	v0.7.0 — Job.ParentJobId self-FK + Job.ComebackReason enum for comeback / warranty linkage. Data source for TorqueTech's comeback-rate report (F15, RFC 0036 — shipped 2026-07-21, PR 15).
 libraries/work/consumption.md	Code-level integration walkthrough.
 libraries/work/cross-library-asset-fk.md	Job.Asset typed as polymorphic Asset base — consumer downcasts at the call site.
 libraries/work/extension-points.md	Extension points — IJobStatusTransitionValidator, IJobStatusChangedHandler (auto-clock-out), IAutoCommentGenerator, IJobNumberGenerator, IOpenEntryWatchdog (forgotten-clock-out).
