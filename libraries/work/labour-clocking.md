@@ -3,9 +3,9 @@ library: work
 version: 0.3.0
 related-rfcs: [0025, 0037]
 related-libs: [audit, identity, notifications]
-last-verified: 2026-05-23
+last-verified: 2026-07-21
 tags: [work, labour, time-tracking, clock-in, audit-rollup]
-summary: LabourEntry timeline + ILabourClockService — per-mechanic clock-in / clock-out per job. Audit auto-rollup to Job via [AuditParent].
+summary: LabourEntry timeline + ILabourClockService — per-mechanic clock-in / clock-out per job. Audit auto-rollup to Job via [AuditParent]. Data source for TorqueTech's mechanic-productivity report (F16, RFC 0037 — shipped 2026-07-21, PR 16).
 ---
 
 # Labour clocking
@@ -218,6 +218,16 @@ behaviour (overlap-detect within job, across jobs, different users
 no conflict; idempotent ClockOut; KeyNotFoundException on unknown
 id; ClockOut-then-ClockIn lifecycle; ListByJob newest-first;
 GetOpenForUser pre/post lifecycle).
+
+## Downstream: TorqueTech mechanic-productivity report (RFC 0037)
+
+`LabourEntry` is the **data source** for TorqueTech's F16 mechanic-productivity report (a TT-only, Premium-gated read-only report — no change to `@chthonic/work`). The report aggregates closed entries per mechanic per period bucket. Shipped 2026-07-21 (PR 16).
+
+**v1 metric (RFC 0037 § 12 Amendment 1).** Neither quoted-hours source proposed in the RFC's § 9 exists in the schema, so v1 re-scopes to data that exists: per mechanic per ISO-week / calendar-month bucket — **hours logged** (closed-entry durations), **jobs worked**, **jobs completed in the bucket**, and **revenue per labour hour** (the linked estimate's `TotalAmount` via `Job.EstimateId`, attributed **pro-rata by the mechanic's share of the job's total closed labour minutes**). The quoted-vs-actual efficiency ratio is a documented v2 follow-up (needs a first-class quoted-hours field).
+
+- **Attribution keys off each mechanic's own `LabourEntry` rows** (`UserId`) — hours are exactly what they clocked; no equal-split or `SharePercentage` field (§ 12c).
+- **Open entries (`ClockOutAt == null`) are excluded** from all aggregations; duration is computed as `ClockOutAt − ClockInAt` (the RFC 0025 convention) and entries bucket by `ClockInAt` (§ 12d).
+- **The overlap-detect invariant matters here** — one open entry per `UserId` across all jobs means summed durations never double-count a mechanic's time.
 
 ## Related
 

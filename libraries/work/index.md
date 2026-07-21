@@ -36,7 +36,7 @@ A `Job` is the unit of work a tenant performs. Cross-product:
 | `IAutoCommentGenerator` | Auto-emits comments on state transitions |
 | `IJobStatusTransitionValidator` | Validates status changes |
 | `IQcSignoffService` (v0.2.0+) | QC sign-off lifecycle (start / submit / rework). See [qc-signoff.md](qc-signoff.md). |
-| `ILabourClockService` (v0.3.0+) | Per-mechanic clock-in / clock-out timeline. Overlap-detect on user; idempotent close. See [labour-clocking.md](labour-clocking.md). |
+| `ILabourClockService` (v0.3.0+) | Per-mechanic clock-in / clock-out timeline. Overlap-detect on user; idempotent close. See [labour-clocking.md](labour-clocking.md). Data source for TT's mechanic-productivity report (F16, RFC 0037). |
 | `JobPriority` enum + `Job.Priority` column (v0.6.0+) | Job urgency: Normal/High/Urgent; default Normal. See [priority.md](priority.md). |
 | `AutoCommentGenerator.TrackPriorityChange` / `AddPriorityChangeComment` (v0.6.0+) | Diff + persist split for priority changes. |
 | `ComebackReason` enum + `Job.ParentJobId` self-FK + `Job.ComebackReason` (v0.7.0+) | Comeback / warranty linkage: Warranty / Goodwill / InsuranceClaim / Other. Data source for F15 comeback-rate report (RFC 0036, shipped PR 15). See [comeback-linkage.md](comeback-linkage.md). |
