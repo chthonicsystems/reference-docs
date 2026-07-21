@@ -242,5 +242,5 @@ libraries/work/index.md	Slimmed Job spine — Job + JobMechanic + auto-comments 
 libraries/work/job-spine.md	Job spine — what the slimmed v0.1.0 owns vs split-off concerns.
 libraries/work/labour-clocking.md	LabourEntry timeline + ILabourClockService — per-mechanic clock-in / clock-out per job. Audit auto-rollup to Job via [AuditParent].
 libraries/work/priority.md	v0.6.0 — Job urgency / priority enum (Normal/High/Urgent) on the Job entity.
-libraries/work/qc-signoff.md	QC sign-off & rework round-trip — per-attempt audit + auto-derive Passes from FieldBoundsValidator + rework loop integration with JobStatus state machine. v0.2.0+. (v0.4.0 — three-status lifecycle. v0.5.0 — per-result upsert in SaveDraft / SubmitSignoff.)
+libraries/work/qc-signoff.md	QC sign-off & rework round-trip — per-attempt audit + auto-derive Passes from FieldBoundsValidator + rework loop integration with JobStatus state machine. v0.2.0+. (v0.4.0 — three-status lifecycle. v0.5.0 — per-result upsert in SaveDraft / SubmitSignoff.) Data source for TorqueTech's first-time-pass QC report (F14, RFC 0035).
 libraries/work/status-transitions.md	Job status transitions — three statuses, valid moves, status-specific permissions.
