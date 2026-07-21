@@ -1,9 +1,9 @@
 ---
 library: work
 related-rfcs: [0028, 0036]
-last-verified: 2026-05-27
+last-verified: 2026-07-21
 tags: [comeback, warranty, self-fk, f7, f15-foundation]
-summary: v0.7.0 — Job.ParentJobId self-FK + Job.ComebackReason enum for comeback / warranty linkage. Foundation for F15 comeback-rate report (RFC 0036).
+summary: v0.7.0 — Job.ParentJobId self-FK + Job.ComebackReason enum for comeback / warranty linkage. Data source for TorqueTech's comeback-rate report (F15, RFC 0036 — shipped 2026-07-21, PR 15).
 ---
 
 # Comeback / warranty linkage
@@ -197,10 +197,22 @@ to `Chthonic.Work` v0.5.x or later.
 - `JobEntityShapeTests` (extended) — property presence, nullability, enum count + ordinal values (6 new cases).
 - `AutoCommentGeneratorComebackTests` — 5 mutation shapes + 2 no-change variants + persistence wiring (10 cases).
 
+## Downstream: TorqueTech comeback-rate report (RFC 0036)
+
+`Job.ParentJobId` is the **data source** for TorqueTech's F15 comeback-rate report (a TT-only, Premium-gated read-only report — no change to `@chthonic/work`). The report aggregates parent/child `Job` links into a monthly comeback rate.
+
+**Comeback rate is measured per completed PARENT job.** A parent job (one with a `CompletedAt` in the reporting period) counts as a comeback if it has **≥1 child job** (`ParentJobId` pointing back) **created within a `windowDays` window of its completion** — `windowDays` is 30 / 60 / 90 (default 30). Numerator = such parents; denominator = parent jobs completed in the period (a job must have had the chance to come back).
+
+- **Reporting period vs window are distinct axes** — `from`/`to` select parents by `CompletedAt`; `windowDays` bounds how long after close a return still counts (keeps the denominator stable as the window widens).
+- **Raw rate vs quality rate** — the raw rate counts every `ComebackReason`; an `excludeReasons` filter (e.g. `Goodwill`) yields the "quality rate". A child with a **null** reason is always counted and never excluded.
+- **Breakdown attributes to the parent** job's assigned mechanic / service type (the original work whose quality is in question).
+
+> **Note on the second signal.** As documented under [Relationship to JobReopen](#relationship-to-jobreopen), the metric can also union TT-side `JobReopen` audit rows. The v1 F15 report (PR 15) aggregates the explicit `Job.ParentJobId` linkage; a `JobReopen` union remains a documented follow-up. See RFC 0036 § 12 Amendment 1.
+
 ## Cross-references
 
 - [RFC 0028 — Comeback / warranty-job linkage](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0028-comeback-linkage.md) — Accepted 2026-05-27 with § 12 Amendment 1 (12a-d) + § 13 Amendment 2 (13a-c)
-- [RFC 0036 — Comeback-rate report (F15)](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0036-comeback-rate-report.md) — consumer
+- [RFC 0036 — Comeback-rate report (F15)](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0036-comeback-rate-report.md) — consumer (Accepted 2026-07-21 § 12 Amendment 1; shipped PR 15)
 - [RFC 0022 § 13 — F1c/F1d state-machine simplification](https://github.com/chthonicsystems/architecture/blob/main/rfcs/0022-qc-signoff.md) — the source of `JobReopen`, the second signal F15 unions with this one
 - [PR 06 — F6 Job priority](priority.md) — sibling pattern (additive column on `Job` instead of Custom Field)
 - [`@chthonic/work` v0.7.0 release](https://github.com/chthonicsystems/work/releases/tag/v0.7.0)
