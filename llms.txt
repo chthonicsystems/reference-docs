@@ -187,7 +187,7 @@ libraries/scheduling/dispatch-board.md	Dispatch-board UX contract — composable
 libraries/scheduling/extension-points.md	The three extension hooks shipped in v0.1.0 — IResourceTypeProvider (taxonomy), IScheduleSlotEventBus (pub/sub), IDispatchBoardPolicyProvider (overlap policy). Plus the consumer-required IDbContextProvider.
 libraries/scheduling/index.md	Vertical-agnostic staff-initiated resource scheduling — Resource + ScheduleSlot + IDispatchBoardService + 3 extension hooks. Distinct from `@chthonic/booking` (customer-initiated).
 libraries/scheduling/resources.md	Resource entity deep-ref — vertical-agnostic schedulable resource with string ResourceType discriminator. Seeded Bay|Lift|Ramp; tenants self-extend via Config Hub.
-libraries/scheduling/schedule-slots.md	ScheduleSlot deep-ref — DB-level non-overlap enforcement via MySQL trigger; force-override via session variable + permission; status state machine; cross-library FK-only typing on JobId/BookingId.
+libraries/scheduling/schedule-slots.md	ScheduleSlot deep-ref — DB-level non-overlap enforcement via MySQL trigger; force-override via session variable + permission; status state machine; cross-library FK-only typing on JobId/BookingId. Data source for TorqueTech's bay-utilization report (F17, RFC 0038).
 libraries/support/architecture.md	Support internals — ticket entity, CTI routing, two-package shape (interface + GitHub impl).
 libraries/support/consumption.md	Code-level integration walkthrough.
 libraries/support/cti-routing.md	Category/Type/Item routing — match incoming tickets to resolver groups + external issue trackers.
