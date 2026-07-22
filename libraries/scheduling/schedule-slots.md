@@ -1,9 +1,9 @@
 ---
 library: scheduling
 version: 0.1.0
-last-verified: 2026-06-06
+last-verified: 2026-07-22
 tags: [schedule-slot, conflict-detection, mysql-trigger, force-override]
-summary: ScheduleSlot deep-ref — DB-level non-overlap enforcement via MySQL trigger; force-override via session variable + permission; status state machine; cross-library FK-only typing on JobId/BookingId.
+summary: ScheduleSlot deep-ref — DB-level non-overlap enforcement via MySQL trigger; force-override via session variable + permission; status state machine; cross-library FK-only typing on JobId/BookingId. Data source for TorqueTech's bay-utilization report (F17, RFC 0038 — shipped 2026-07-22, PR 17).
 ---
 
 # ScheduleSlot
@@ -103,6 +103,17 @@ The lib's triggers are CREATE TRIGGER statements which require `SUPER` privilege
 **TT dev DB setup:** one-time `SET GLOBAL log_bin_trust_function_creators = 1` as root. Persists for the container lifetime.
 
 **TT prod/beta:** the same setting needs to be applied to MySQL/MariaDB at the server level (e.g. via `my.cnf`). MariaDB on beta typically has it enabled by default.
+
+## Downstream: TorqueTech bay-utilization report (RFC 0038)
+
+`ScheduleSlot` is the **data source** for TorqueTech's F17 bay-utilization report (a TT-only, Premium-gated read-only report — no change to `@chthonic/scheduling`). Shipped 2026-07-22 (PR 17) — the final feature in the Jobs Enhancements program.
+
+**Utilization is measured per Resource over a reporting range** (RFC 0038 § 12 Amendment 1): occupied hours ÷ available hours, where available = tenant `System.WorkingHoursStart/End` × calendar days (8 h/day fallback when unset, flagged `usingDefaultHours`), and occupied time is **clipped to the range and the daily operating window** so a fully-booked bay tops out at 100%.
+
+- **Status semantics mirror the conflict-detection trigger** — `Cancelled` never counts toward occupancy; `Reserved` / `InProgress` / `Completed` do (Reserved is bounded by the operating-window clip).
+- **The denormalised `SystemId` earns its keep here** — the report filters slots per-tenant without a Resource JOIN.
+- **`Resource.IsActive` soft-delete matters** — deactivated Resources' historical slots stay queryable and appear in the report when they have in-range occupancy (exactly the repurpose/close decision data the soft-delete was designed to preserve).
+- A Resource × hour-of-day heatmap aggregates each slot's range-clipped minutes into 24 buckets.
 
 ## Cross-references
 
