@@ -96,9 +96,15 @@ Consumers register the permissions in their native shell:
 ```xml
 <uses-permission android:name="android.permission.CAMERA" />
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
-<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
 ```
+
+> **Do not add `READ_MEDIA_IMAGES` / `READ_MEDIA_VIDEO`.** Google Play's
+> [photo and video permissions policy](https://support.google.com/googleplay/android-developer/answer/14115180)
+> prohibits these broad permissions for apps targeting Android 13+ unless
+> system pickers are technically insufficient. They are not needed here:
+> `pickFromLibrary` uses an HTML5 file input (system picker, no permission),
+> and `@capacitor/camera` uses the Android photo picker for gallery access
+> on API 33+.
 
 ## Example (TorqueTech QC evidence flow)
 
