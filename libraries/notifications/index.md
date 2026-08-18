@@ -12,7 +12,7 @@ summary: Multi-channel publisher (push/email/SMS/in-app) + Liquid templates + da
 
 # `@chthonicsystems/notifications` / `Chthonic.Notifications`
 
-Multi-channel notification publisher. Email (Amazon SES), SMS (Twilio), push (Firebase FCM), in-app. Single `INotificationPublisher` for all channels; Liquid templates per template-key per channel.
+Multi-channel notification publisher. Email (Amazon SES), SMS (AWS SNS), push (Firebase FCM), in-app. Single `INotificationPublisher` for all channels; Liquid templates per template-key per channel.
 
 ## Purpose
 
@@ -30,7 +30,7 @@ Multi-channel notification publisher. Email (Amazon SES), SMS (Twilio), push (Fi
 |---|---|
 | `INotificationPublisher` / `NotificationPublisher` | `PublishAsync(channel, recipient, templateKey, data)` |
 | `IEmailSenderService` / `EmailSenderService` | SES wrapper |
-| `ITwilioSmsService` / `TwilioSmsService` | Twilio wrapper |
+| `ISmsDispatcher` — `SnsSmsDispatcher` (prod, `SMS_PROVIDER=sns`) / `LoggingSmsDispatcher` (default) | AWS SNS SMS wrapper |
 | `IFcmPushService` / `FcmPushService` | Firebase FCM wrapper |
 | `IEmailTemplateRenderer` / `EmailTemplateRenderer` | Fluid + locale filters; reads templates from `Templates/` embedded resources |
 | `INotificationLogger` / `NotificationLogger` | Writes `notification_log` rows |
@@ -93,7 +93,7 @@ communication
 | `@chthonic/templating` | Liquid render + locale filters |
 | `@chthonic/audit` | Audit on send |
 | `Amazon.SimpleEmailV2` | SES |
-| `Twilio` | SMS |
+| `AWSSDK.SimpleNotificationService` | SMS |
 | `FirebaseAdmin` | FCM |
 
 ## Extension points
