@@ -27,8 +27,11 @@ AWS_ACCESS_KEY_ID=...
 AWS_SECRET_ACCESS_KEY=...
 FROM_EMAIL=admin@chthonicsystems.com         # verified in SES
 
-SMS_PROVIDER=sns                             # production only — omit for dev/beta (logs OTP instead of sending)
-SMS_SENDER_ID=MyBrand                        # optional SNS alphanumeric sender ID
+SMS_PROVIDER=twilio                          # twilio (production) | sns (AWS SNS) | unset = log-only (dev/beta)
+TWILIO_ACCOUNT_SID=...                       # when SMS_PROVIDER=twilio
+TWILIO_AUTH_TOKEN=...
+TWILIO_PHONE_NUMBER=+1...
+SMS_SENDER_ID=MyBrand                        # optional SNS alphanumeric sender ID (sns only)
 
 FIREBASE_SERVICE_ACCOUNT_JSON=...            # path or JSON string
 ```
